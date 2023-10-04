@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('first_name');
             $table->string('last_name');
             $table->string('middle_name')->nullable();
@@ -22,10 +23,9 @@ return new class extends Migration
             $table->date('birthday');
             $table->string('home_address');
             $table->string('mobile_number')->nullable();
-            $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('user');;
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

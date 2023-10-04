@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('first_name');
             $table->string('last_name');
             $table->string('middle_name')->nullable();
@@ -33,10 +34,9 @@ return new class extends Migration
             $table->string('person_responsible_mobile_number')->nullable();
             $table->string('relationship')->nullable();
             $table->string('referal_person')->nullable();
-            $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('user');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
