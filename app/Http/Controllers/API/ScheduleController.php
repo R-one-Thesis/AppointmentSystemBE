@@ -12,11 +12,25 @@ class ScheduleController extends Controller
 {
     public function viewSchedules() {
 
-        $schedules = Schedule::all();
+        $allSchedules = Schedule::all();
 
-        if ($schedules->isEmpty()) {
+        if ($allSchedules->isEmpty()) {
             return response()->json(['message' => 'No data found']);
-        }    
+        }
+        $schedules = $allSchedules->map(function($data){
+            return [
+                "id" => $data->id,
+                "doctors_id" => $data->doctors_id,
+                "dentist_name" => $data->doctor->dentist,
+                "specialization" => $data->doctor->specialization,
+                "services" => $data->services,
+                "date" => $data->date,
+                "time_start" => $data->time_start->year,
+                "duration" => $data->duration,
+                "booked" => $data->booked,
+                
+            ];
+        });    
 
         return response()->json(['message' => 'data found', 'schedules' => $schedules]);
     }
