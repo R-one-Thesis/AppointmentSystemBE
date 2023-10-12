@@ -44,15 +44,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function admin() {
-
-        return $this->hasMany(Admin::class, 'user_id');
-
+    public function admin()
+    {
+        return $this->hasOne(Admin::class, 'user_id', 'id');
     }
 
-    public function patient() {
-
-        return $this->hasMany(Patient::class, 'user_id');
-
+    public function patient()
+    {
+        return $this->hasOne(Patient::class, 'user_id', 'id');
     }
 }

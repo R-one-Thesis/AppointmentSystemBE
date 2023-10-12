@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('middle_name')->nullable();
             $table->string('extension_name')->nullable();
-            $table->date('birthday');
+            $table->date('birthday')->nullable();
             $table->string('home_address');
             $table->string('mobile_number')->nullable();
             $table->timestamps();
