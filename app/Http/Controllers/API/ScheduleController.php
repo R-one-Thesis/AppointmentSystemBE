@@ -37,7 +37,7 @@ class ScheduleController extends Controller
 
     public function addSchedule(Request $request) {
         $validator = Validator::make($request->all(), [
-            'doctors_id' => 'required|exists:doctors,id',
+            'doctors_id' => 'required',
             'services' => 'required|json',
             'date' => 'required|date',
             'time_start' => 'required|date_format:H:i',
@@ -50,6 +50,7 @@ class ScheduleController extends Controller
 
         try {
             $scheduleData = $request->all();
+            $scheduleData['services'] = json_decode($scheduleData['services'], true); // Convert JSON string to array
             $scheduleData['booked'] = false;
             Schedule::create($scheduleData);
             return response()->json(['message' => 'Schedule added successfully'], 201);
