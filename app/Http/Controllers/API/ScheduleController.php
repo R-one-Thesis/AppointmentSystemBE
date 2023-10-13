@@ -25,7 +25,7 @@ class ScheduleController extends Controller
                 "specialization" => $data->doctor->specialization,
                 "services" => $data->services,
                 "date" => $data->date,
-                "time_start" => $data->time_start->year,
+                "time_start" => $data->time_start,
                 "duration" => $data->duration,
                 "booked" => $data->booked,
                 
