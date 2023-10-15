@@ -18,6 +18,10 @@ class Schedule extends Model
         'booked'
     ];
 
+    protected $casts = [
+        'services' => 'array',
+    ];
+
     public function doctor() {
         return $this->belongsTo(Doctor::class, 'doctors_id', 'id');
     }

@@ -7,6 +7,7 @@ use App\Models\Schedule;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class ScheduleController extends Controller
 {
@@ -38,24 +39,37 @@ class ScheduleController extends Controller
     public function addSchedule(Request $request) {
         $validator = Validator::make($request->all(), [
             'doctors_id' => 'required',
-            'services' => 'required|json',
+            'services' => 'required|array',
             'date' => 'required|date',
             'time_start' => 'required|date_format:H:i',
-            'duration' => 'required|numeric',
+            'duration' => 'required',
         ]);
-
+        Log::info('Input data: ' . json_encode($request->all()));
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-
+    
         try {
             $scheduleData = $request->all();
-            $scheduleData['services'] = json_decode($scheduleData['services'], true); // Convert JSON string to array
             $scheduleData['booked'] = false;
-            Schedule::create($scheduleData);
+            
+            // No need to convert 'services' to JSON here, as it's already cast as 'array' in the model.
+            // Schedule::create($scheduleData);
+    
+            // Use this line instead:
+            Schedule::create([
+                'doctors_id' => $scheduleData['doctors_id']['doctors_id'],
+                'services' => $scheduleData['services'],
+                'date' => $scheduleData['date'],
+                'time_start' => $scheduleData['time_start'],
+                'duration' => $scheduleData['duration']['duration'],
+                'booked' => true,
+            ]);
+            
             return response()->json(['message' => 'Schedule added successfully'], 201);
         } catch (Exception $e) {
             return response()->json(['error' => 'An error occurred while adding the schedule'], 500);
         }
     }
+    
 }
