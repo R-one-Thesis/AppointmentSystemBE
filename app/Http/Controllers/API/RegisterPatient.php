@@ -8,10 +8,13 @@ use App\Models\Patient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 
 class RegisterPatient extends Controller
 {
     public function registerPatient(Request $request) {
+        // return $request;
         try {
             // Start a database transaction
             DB::beginTransaction();
@@ -25,6 +28,7 @@ class RegisterPatient extends Controller
                 'birthday' => 'required|date',
                 'sex' => 'required|in:Male,Female', // You can specify the valid options here
                 'mobile_number' => 'required',
+                'home_address' => 'required'
             ]);
 
             // Create a new user
@@ -42,6 +46,7 @@ class RegisterPatient extends Controller
             $patient->middle_name = $request->input('middle_name');
             $patient->extension_name = $request->input('extension_name');
             $patient->birthday = $request->input('birthday');
+            $patient->home_address = $request->input('home_address');
             $patient->sex = $request->input('sex');
             $patient->mobile_number = $request->input('mobile_number');
             // You can set the other optional fields here
@@ -52,10 +57,28 @@ class RegisterPatient extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Patient registered successfully'], 201);
-        } catch (Exception $e) {
-            // Rollback the database transaction in case of an error
+        } catch (ValidationException $e) {
+            // Validation errors
             DB::rollBack();
-            return response()->json(['message' => 'Registration failed. Please try again.'], 500);
+    
+            $errors = $e->validator->getMessageBag();
+            
+            if ($errors->has('email')) {
+                // Handle the specific email uniqueness error
+                return response()->json(['message' => 'Email already in use'], 422);
+            }
+    
+            // Handle other validation errors here
+            return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
+        } 
+        catch (QueryException $e) {
+            // Database query errors
+            DB::rollBack();
+            return response()->json(['message' => 'Database error occurred', 'error' => $e->getMessage()], 500);
+        } catch (Exception $e) {
+            // Other unexpected errors
+            DB::rollBack();
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
         }
     }
 }

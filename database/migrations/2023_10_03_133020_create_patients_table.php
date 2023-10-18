@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('office_address')->nullable();
             $table->string('work_phone_number')->nullable();
             $table->string('mobile_number')->nullable();
-            $table->string('marital_status');
+            $table->string('marital_status')->nullable();
             $table->string('spouse')->nullable();
             $table->string('person_responsible_for_the_account')->nullable();
             $table->string('person_responsible_mobile_number')->nullable();
