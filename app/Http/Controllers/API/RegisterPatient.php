@@ -81,4 +81,44 @@ class RegisterPatient extends Controller
             return response()->json(['message' => 'An unexpected error occurred'], 500);
         }
     }
+
+    public function updatePatient(Request $request, $id) {
+        try {
+            // Find the patient by ID
+            $patient = Patient::findOrFail($id);
+    
+            // Validate the incoming request data
+            $request->validate([
+                'first_name' => 'string',
+                'last_name' => 'string',
+                'middle_name' => 'string|nullable',
+                'extension_name' => 'string|nullable',
+                'birthday' => 'date|nullable',
+                'sex' => 'in:Male,Female|nullable',
+                'religion' => 'string|nullable',
+                'home_address' => 'string|nullable',
+                'home_phone_number' => 'string|nullable',
+                'office_address' => 'string|nullable',
+                'work_phone_number' => 'string|nullable',
+                'mobile_number' => 'string|nullable',
+                'marital_status' => 'string|nullable',
+                'spouse' => 'string|nullable',
+                'person_responsible_for_the_account' => 'string|nullable',
+                'person_responsible_mobile_number' => 'string|nullable',
+                'relationship' => 'string|nullable',
+                'referal_person' => 'string|nullable',
+            ]);
+    
+            // Update only the fields provided in the request
+            $patient->update($request->all());
+    
+            return response()->json(['message' => 'Patient data updated successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+            // Handle the case where the patient is not found
+            return response()->json(['message' => 'Patient not found'], 404);
+        } catch (\Exception $e) {
+            // Handle other unexpected errors
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
+        }
+    }
 }
