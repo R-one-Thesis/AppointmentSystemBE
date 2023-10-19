@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\RegisterPatient;
 use App\Http\Controllers\API\DoctorController;
+use App\Http\Controllers\API\PatientController;
 use App\Http\Controllers\API\ScheduleController;
 
 /*
@@ -28,6 +29,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('add-schedule', [ScheduleController::class, 'addSchedule']);
 
     Route::post('register', [RegisterPatient::class, 'registerPatient']);
+    Route::get('patients', [PatientController::class, 'viewAllPatients']);
     Route::get('logout', [AuthController::class, 'logout']);
 });
 // Route::get('view-doctors', [DoctorController::class, 'viewDoctors']);
