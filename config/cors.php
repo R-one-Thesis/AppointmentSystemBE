@@ -15,14 +15,11 @@ return [
     |
     */
 
-    // 'paths' => ['*'],
-    'paths' => ['api/*'],
+    'paths' => ['*'],
 
     'allowed_methods' => ['*'],
 
-    // 'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
-
-    'allowed_origins' => ['https://appointment-fe.ronewebsolutions.com'],
+    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
 
     'allowed_origins_patterns' => [],
 
@@ -32,6 +29,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];
