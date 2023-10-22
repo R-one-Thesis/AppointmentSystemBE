@@ -63,7 +63,7 @@ class ScheduleController extends Controller
                 'date' => $scheduleData['date'],
                 'time_start' => $scheduleData['time_start'],
                 'duration' => $scheduleData['duration']['duration'],
-                'booked' => true,
+                'booked' => false,
             ]);
             
             return response()->json(['message' => 'Schedule added successfully'], 201);
