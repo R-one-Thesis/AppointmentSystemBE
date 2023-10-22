@@ -37,7 +37,7 @@ jobs:
       run: php artisan key:generate
     - name: Clear Cache
       run: php artisan config:cache
-     - name: Clear route
+    - name: Clear route
       run: php artisan route:clear
     - name: Set up Node.js
       uses: actions/setup-node@v2
