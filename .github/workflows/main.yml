@@ -39,8 +39,6 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: 18.16.1
-    - name: Install npm
-      run: npm install
     - name: Create .htaccess file
       run: |
         echo "<IfModule mod_rewrite.c>" > .htaccess
