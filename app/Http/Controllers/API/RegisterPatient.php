@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class RegisterPatient extends Controller
 {
@@ -30,7 +31,7 @@ class RegisterPatient extends Controller
                 'mobile_number' => 'required',
                 'home_address' => 'required'
             ]);
-
+            Log::info('Input data: ' . json_encode($request->all()));
             // Create a new user
             $user = new User();
             $user->email = $request->input('email');
