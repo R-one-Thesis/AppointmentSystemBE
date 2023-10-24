@@ -31,7 +31,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('add-schedule', [ScheduleController::class, 'addSchedule']);
 
     Route::get('patients', [PatientController::class, 'viewAllPatients']);
-    Route::put('update-patients', [PatientController::class, 'updatePatient']);
+    Route::put('update-patients/{id}', [RegisterPatient::class, 'updatePatient']);
     Route::get('logout', [AuthController::class, 'logout']);
 });
 // Route::get('view-doctors', [DoctorController::class, 'viewDoctors']);
