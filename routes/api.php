@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     Route::post('register', [RegisterPatient::class, 'registerPatient']);
     Route::get('patients', [PatientController::class, 'viewAllPatients']);
+    Route::post('update-patients', [PatientController::class, 'updatePatient']);
     Route::get('logout', [AuthController::class, 'logout']);
 });
 // Route::get('view-doctors', [DoctorController::class, 'viewDoctors']);
