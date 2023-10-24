@@ -21,6 +21,7 @@ use App\Http\Controllers\API\ScheduleController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('view-schedules', [ScheduleController::class, 'viewSchedules']);
+Route::post('register', [RegisterPatient::class, 'registerPatient']);
 
 
 Route::group(['middleware' => ['auth:sanctum']], function() {
@@ -29,7 +30,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('add-doctors', [DoctorController::class, 'addDoctor']);
     Route::post('add-schedule', [ScheduleController::class, 'addSchedule']);
 
-    Route::post('register', [RegisterPatient::class, 'registerPatient']);
     Route::get('patients', [PatientController::class, 'viewAllPatients']);
     Route::post('update-patients', [PatientController::class, 'updatePatient']);
     Route::get('logout', [AuthController::class, 'logout']);
