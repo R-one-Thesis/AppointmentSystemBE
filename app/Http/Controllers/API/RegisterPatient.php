@@ -122,4 +122,25 @@ class RegisterPatient extends Controller
             return response()->json(['message' => 'An unexpected error occurred'], 500);
         }
     }
+
+
+
+    public function deletePatient($id)
+    {
+        try {
+            // Find the patient by ID
+            $patient = Patient::findOrFail($id);
+
+            // Delete the patient
+            $patient->delete();
+
+            return response()->json(['message' => 'Patient deleted successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+            // Handle the case where the patient is not found
+            return response()->json(['message' => 'Patient not found'], 404);
+        } catch (\Exception $e) {
+            // Handle other unexpected errors
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
+        }
+    }
 }
