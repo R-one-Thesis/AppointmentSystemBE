@@ -50,6 +50,7 @@ class AdminController extends Controller
             ]);
 
             $admin = Admin::create([
+                'user_id' => $user->id,
                 'first_name' => $validatedData['first_name'],
                 'last_name' => $validatedData['last_name'],
                 'middle_name' => $validatedData['middle_name'],
