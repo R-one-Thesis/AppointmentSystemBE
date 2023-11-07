@@ -16,14 +16,16 @@ return new class extends Migration
         Schema::create('histories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('patient_id');
-            $table->json('physician_data')->nullable();
-            $table->json('hospitalizations_data')->nullable();
-            $table->json('surgery_data')->nullable();
-            $table->json('illness_disease')->nullable();
+            $table->string('physician')->nullable();
+            $table->string('physaddress')->nullable();
+            $table->string('reason')->nullable();
+            $table->string('hospitalization_reason')->nullable();
+            $table->json('conditions')->nullable();
             $table->json('medication')->nullable();
             $table->json('allergies')->nullable();
-            $table->json('pregnancy')->nullable();
-            $table->json('menstrual_data')->nullable();
+            $table->boolean('pregnant')->nullable();
+            $table->date('expected_date')->nullable();
+            $table->string('mens_problems')->nullable();
             $table->timestamps();
 
             $table->foreign('patient_id')->references('id')->on('patients');
