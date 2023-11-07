@@ -65,6 +65,9 @@ class RegisterPatient extends Controller
             
             $patient= Patient::create($patientData);
 
+            $patientHistoryData = ['patient_id' => $patient->id];
+            $patientHistory = History::create($patientHistoryData);
+
             DB::commit();
 
             return response()->json(['message' => 'Patient registered successfully'], 201);
