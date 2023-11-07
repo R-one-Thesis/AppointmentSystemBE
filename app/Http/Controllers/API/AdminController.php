@@ -61,7 +61,7 @@ class AdminController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Admin User has been Created'], 201);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['message' => 'Error occurred while creating User Admin'], 500);
         }
