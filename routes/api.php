@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\RegisterPatient;
 use App\Http\Controllers\API\DoctorController;
 use App\Http\Controllers\API\PatientController;
@@ -35,6 +36,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::delete('delete-patient/{id}', [RegisterPatient::class, 'deletePatient']);
 
     Route::get('logout', [AuthController::class, 'logout']);
+
+    Route::apiResource('admin', AdminController::class);
 });
 // Route::get('view-doctors', [DoctorController::class, 'viewDoctors']);
 //     Route::post('add-doctors', [DoctorController::class, 'addDoctor']);
