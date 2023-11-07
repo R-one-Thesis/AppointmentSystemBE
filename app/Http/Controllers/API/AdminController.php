@@ -49,16 +49,31 @@ class AdminController extends Controller
                 'password' => Hash::make($validatedData['password']), // Hash the password
             ]);
 
-            $admin = Admin::create([
+            $adminData = [
                 'user_id' => $user->id,
                 'first_name' => $validatedData['first_name'],
                 'last_name' => $validatedData['last_name'],
-                'middle_name' => $validatedData['middle_name'],
-                'extension_name' => $validatedData['extension_name'],
-                'birthday' => $validatedData['birthday'],
                 'home_address' => $validatedData['home_address'],
-                'mobile_number' => $validatedData['mobile_number'],
-            ]);
+            ];
+    
+            // Check if optional fields are provided and add them conditionally
+            if (isset($validatedData['middle_name'])) {
+                $adminData['middle_name'] = $validatedData['middle_name'];
+            }
+    
+            if (isset($validatedData['extension_name'])) {
+                $adminData['extension_name'] = $validatedData['extension_name'];
+            }
+    
+            if (isset($validatedData['birthday'])) {
+                $adminData['birthday'] = $validatedData['birthday'];
+            }
+    
+            if (isset($validatedData['mobile_number'])) {
+                $adminData['mobile_number'] = $validatedData['mobile_number'];
+            }
+    
+            $admin = Admin::create($adminData);
 
             DB::commit();
 
