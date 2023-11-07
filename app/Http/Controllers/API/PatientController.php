@@ -112,7 +112,7 @@ class PatientController extends Controller
                 'expected_datemens_problems', 'mens_problems'
             ];
             
-            $patientHistoryData = ['user_id' => $patient->id];
+            $patientHistoryData = ['patient_id' => $patient->id];
             
             foreach ($historyFields as $field) {
                 if (isset($validatedData[$field])) {
