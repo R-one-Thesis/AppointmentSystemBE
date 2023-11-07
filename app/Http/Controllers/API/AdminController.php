@@ -65,7 +65,7 @@ class AdminController extends Controller
             return response()->json(['message' => 'Admin User has been Created'], 201);
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['message' => 'Error occurred while creating User Admin'], 500);
+            return response()->json(['message' => $e->message], 500);
         }
     }
 
