@@ -20,7 +20,17 @@ class AdminController extends Controller
      */
     public function index()
     {
-        //
+        $admins = Admin::all();
+
+        $admins->each(function ($admin) {
+            $admin->email = $admin->user->email;
+            $admin->user_type = $admin->user->user_type;
+
+            unset($admin->user);
+
+        });
+
+        return response()->json(['data' => $admins], 200);
     }
 
     /*
