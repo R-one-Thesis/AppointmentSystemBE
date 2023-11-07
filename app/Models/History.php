@@ -23,7 +23,11 @@ class History extends Model
     ];
 
 
-    
+    protected $casts = [
+        'conditions' => 'array',
+        'medication' => 'array',
+        'allergies' => 'array',
+    ];
 
 
 

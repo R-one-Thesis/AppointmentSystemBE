@@ -15,46 +15,55 @@ use Illuminate\Support\Facades\Log;
 class RegisterPatient extends Controller
 {
     public function registerPatient(Request $request) {
-        // return $request;
+        $validatedData = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'middle_name' => 'sometimes|string',
+            'extension_name' => 'sometimes|string',
+            'birthday' => 'sometimes|date',
+            'sex' => 'required|in:Male,Female',
+            'home_address' => 'required|string',
+            'mobile_number' => 'sometimes|string',
+        ]);
+
         try {
-            // Start a database transaction
+
             DB::beginTransaction();
 
-            // Validate the incoming request data
-            $request->validate([
-                'email' => 'required|email|unique:users',
-                'password' => 'required|min:8',
-                'first_name' => 'required',
-                'last_name' => 'required',
-                'birthday' => 'required|date',
-                'sex' => 'required|in:Male,Female', // You can specify the valid options here
-                'mobile_number' => 'required',
-                'home_address' => 'required'
+            $user = User::create([
+                'email' => $validatedData['email'],
+                'user_type' => "Patient",
+                'password' => Hash::make($validatedData['password']), 
             ]);
-            Log::info('Input data: ' . json_encode($request->all()));
-            // Create a new user
-            $user = new User();
-            $user->email = $request->input('email');
-            $user->password = bcrypt($request->input('password'));
-            $user->user_type = 'patient'; // Set the user type to 'patient'
-            $user->save();
 
-            // Create a new patient associated with the user
-            $patient = new Patient();
-            $patient->user_id = $user->id;
-            $patient->first_name = $request->input('first_name');
-            $patient->last_name = $request->input('last_name');
-            $patient->middle_name = $request->input('middle_name');
-            $patient->extension_name = $request->input('extension_name');
-            $patient->birthday = $request->input('birthday');
-            $patient->home_address = $request->input('home_address');
-            $patient->sex = $request->input('sex');
-            $patient->mobile_number = $request->input('mobile_number');
-            // You can set the other optional fields here
+            $patientData = [
+                'user_id' => $user->id,
+                'first_name' => $validatedData['first_name'],
+                'last_name' => $validatedData['last_name'],
+                'sex' => $validatedData['sex'],
+                'home_address' => $validatedData['home_address'],
+            ];
 
-            $patient->save();
+            if (isset($validatedData['middle_name'])) {
+                $patientData['middle_name'] = $validatedData['middle_name'];
+            }
+    
+            if (isset($validatedData['extension_name'])) {
+                $patientData['extension_name'] = $validatedData['extension_name'];
+            }
+    
+            if (isset($validatedData['birthday'])) {
+                $patientData['birthday'] = $validatedData['birthday'];
+            }
+    
+            if (isset($validatedData['mobile_number'])) {
+                $patientData['mobile_number'] = $validatedData['mobile_number'];
+            }
+            
+            $patient= Patient::create($adminData);
 
-            // Commit the database transaction
             DB::commit();
 
             return response()->json(['message' => 'Patient registered successfully'], 201);

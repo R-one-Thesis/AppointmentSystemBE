@@ -31,13 +31,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('add-doctors', [DoctorController::class, 'addDoctor']);
     Route::post('add-schedule', [ScheduleController::class, 'addSchedule']);
 
-    Route::get('patients', [PatientController::class, 'viewAllPatients']);
+    // Route::get('patients', [PatientController::class, 'viewAllPatients']);
     Route::put('update-patients/{id}', [RegisterPatient::class, 'updatePatient']);
     Route::delete('delete-patient/{id}', [RegisterPatient::class, 'deletePatient']);
 
     Route::get('logout', [AuthController::class, 'logout']);
 
     Route::apiResource('admin', AdminController::class);
+    Route::apiResource('patient', PatientController::class);
 });
 // Route::get('view-doctors', [DoctorController::class, 'viewDoctors']);
 //     Route::post('add-doctors', [DoctorController::class, 'addDoctor']);

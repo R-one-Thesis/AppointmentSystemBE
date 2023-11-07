@@ -13,10 +13,8 @@ use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
-    /**
+    /*
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -56,7 +54,7 @@ class AdminController extends Controller
             $user = User::create([
                 'email' => $validatedData['email'],
                 'user_type' => "Admin",
-                'password' => Hash::make($validatedData['password']), // Hash the password
+                'password' => Hash::make($validatedData['password']),
             ]);
 
             $adminData = [
@@ -66,7 +64,7 @@ class AdminController extends Controller
                 'home_address' => $validatedData['home_address'],
             ];
     
-            // Check if optional fields are provided and add them conditionally
+         
             if (isset($validatedData['middle_name'])) {
                 $adminData['middle_name'] = $validatedData['middle_name'];
             }
