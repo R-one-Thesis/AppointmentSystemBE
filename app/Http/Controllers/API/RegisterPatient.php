@@ -63,7 +63,7 @@ class RegisterPatient extends Controller
                 $patientData['mobile_number'] = $validatedData['mobile_number'];
             }
             
-            $patient= Patient::create($adminData);
+            $patient= Patient::create($patientData);
 
             DB::commit();
 
