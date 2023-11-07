@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('reason')->nullable();
             $table->string('hospitalization_reason')->nullable();
             $table->json('conditions')->nullable();
-            $table->json('medication')->nullable();
-            $table->json('allergies')->nullable();
+            $table->string('medication')->nullable();
+            $table->string('allergies')->nullable();
             $table->boolean('pregnant')->nullable();
             $table->date('expected_date')->nullable();
             $table->string('mens_problems')->nullable();
