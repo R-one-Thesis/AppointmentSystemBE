@@ -25,8 +25,18 @@ class PatientController extends Controller
         $patients->each(function ($patient) {
             $patient->email = $patient->user->email;
             $patient->user_type = $patient->user->user_type;
+            $patient->physician = $patient->history->physician;
+            $patient->physaddress = $patient->history->physaddress;
+            $patient->reason = $patient->history->reason;
+            $patient->hospitalization_reason = $patient->history->hospitalization_reason;
+            $patient->conditions = $patient->history->conditions;
+            $patient->medication = $patient->history->medication;
+            $patient->allergies = $patient->history->allergies;
+            $patient->pregnant = $patient->history->pregnant;
+            $patient->expected_date = $patient->history->expected_date;
+            $patient->mens_problems = $patient->history->mens_problems;
 
-            unset($patient->user);
+            unset($patient->user,$patient->history);
 
         });
 

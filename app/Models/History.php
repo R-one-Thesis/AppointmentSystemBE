@@ -12,14 +12,16 @@ class History extends Model
 
     protected $fillable = [
         'patient_id',
-        'physician_data',
-        'hospitalizations_data',
-        'surgery_data',
-        'illness_disease',
+        'physician',
+        'physaddress',
+        'reason',
+        'hospitalization_reason',
+        'conditions',
         'medication',
         'allergies',
-        'pregnancy',
-        'menstrual_data'
+        'pregnant',
+        'expected_date',
+        'mens_problems',
     ];
 
 
