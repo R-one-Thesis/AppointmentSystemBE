@@ -35,7 +35,7 @@ class PatientController extends Controller
                 $patient->physaddress = $patient->history->physaddress ?? "";
                 $patient->reason = $patient->history->reason ?? "";
                 $patient->hospitalization_reason = $patient->history->hospitalization_reason ?? "";
-                $patient->conditions = $patient->history->conditions ?? "";
+                $patient->conditions = $patient->history->conditions ?? [];
                 $patient->medication = $patient->history->medication ?? "";
                 $patient->allergies = $patient->history->allergies ?? "";
                 $patient->pregnant = $patient->history->pregnant ?? "";
