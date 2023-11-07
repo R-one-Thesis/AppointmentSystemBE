@@ -33,7 +33,7 @@ class History extends Model
 
 
 
-    public function history() {
-        return $this->belongsTo(Patient::class, 'patient_id');
+    public function patient() {
+        return $this->belongsTo(Patient::class, 'patient_id', 'id');
     }
 }
