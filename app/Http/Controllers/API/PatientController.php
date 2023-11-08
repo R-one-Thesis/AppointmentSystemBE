@@ -178,17 +178,110 @@ class PatientController extends Controller
         //
     }
 
-    /**
+    /*
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        
+        $validatedData = $request->validate([
+            'email' => 'nullable|email', // Email is optional
+            'first_name' => 'nullable|string', // First name is optional
+            'last_name' => 'nullable|string', // Last name is optional
+            'middle_name' => 'nullable|string',
+            'extension_name' => 'nullable|string',
+            'birthday' => 'nullable|date',
+            'sex' => 'nullable|in:Male,Female', // Sex is optional
+            'religion' => 'nullable|string',
+            'home_address' => 'nullable|string',
+            'home_phone_number' => 'nullable|string',
+            'office_address' => 'nullable|string',
+            'work_phone_number' => 'nullable|string',
+            'mobile_number' => 'nullable|string',
+            'marital_status' => 'nullable|string',
+            'spouse' => 'nullable|string',
+            'person_responsible_for_the_account' => 'nullable|string',
+            'person_responsible_mobile_number' => 'nullable|string',
+            'relationship' => 'nullable|string',
+            'referal_person' => 'nullable|string',
+            'physician' => 'nullable|string',
+            'physaddress' => 'nullable|string',
+            'reason' => 'nullable|string',
+            'hospitalization_reason' => 'nullable|string',
+            'conditions' => 'nullable|array',
+            'medication' => 'nullable|string',
+            'allergies' => 'nullable|string',
+            'pregnant' => 'nullable|string',
+            'expected_date' => 'nullable|date',
+            'mens_problems' => 'nullable|string',
+        ]);
+        
+        try {
+            DB::beginTransaction();
+
+            
+            $patient = Patient::findOrFail($id);
+            
+            if (isset($validatedData['email'])) {
+                $patient->user->email = $validatedData['email'];
+                $patient->user->save();
+            }
+
+            $patientFields = [
+                'first_name', 'last_name', 'middle_name', 'extension_name', 'birthday', 'sex', 'religion', 'home_address',
+                'home_phone_number', 'office_address', 'work_phone_number', 'mobile_number', 'marital_status', 'spouse', 
+                'person_responsible_for_the_account', 'person_responsible_mobile_number', 'relationship', 'referal_person'
+            ];
+
+            foreach ($patientFields as $field) {
+                if (isset($validatedData[$field])) {
+                    $patient->$field = $validatedData[$field];
+                }
+            }
+            $patient->save();
+            
+            $historyFields = [
+                'physician', 'physaddress', 'reason', 'hospitalization_reason',
+                'conditions', 'medication', 'allergies', 'pregnant',
+                'expected_date', 'mens_problems',
+            ];
+
+            foreach ($historyFields as $field) {
+                if (isset($validatedData[$field])) {
+                    $patient->history->$field = $validatedData[$field];
+                }
+            }
+
+            $patient->history->save();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Patient updated successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+            // Patient not found
+            DB::rollBack();
+            return response()->json(['message' => 'Patient not found'], 404);
+        } catch (ValidationException $e) {
+            // Validation errors
+            DB::rollBack();
+            $errors = $e->validator->getMessageBag();
+
+            if ($errors->has('email')) {
+                return response()->json(['message' => 'Email already in use'], 422);
+            }
+
+            return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
+        } catch (QueryException $e) {
+            // Database query errors
+            DB::rollBack();
+            return response()->json(['message' => 'Database error occurred', 'error' => $e->getMessage()], 500);
+        } catch (Exception $e) {
+            // Other unexpected errors
+            DB::rollBack();
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
