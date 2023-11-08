@@ -84,7 +84,7 @@ class ScheduleController extends Controller
 
             $schedule = Schedule::lockForUpdate()->findOrFail($id);
 
-            if ($schedule->booking) {
+            if ($schedule->booked == 1) {
                 DB::rollBack();
                 return response()->json(['message' => 'Schedule is already booked'], 400);
             }
@@ -95,7 +95,7 @@ class ScheduleController extends Controller
             ]);
 
             $booking->save();
-            
+
             $schedule->update(['booked' => true]);
 
             DB::commit();
