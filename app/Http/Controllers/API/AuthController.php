@@ -28,17 +28,30 @@ class AuthController extends Controller
            
         if($user->user_type === 'patient'){
             $fullName = $user->patient->first_name . ($user->patient->middle_name ? ' ' . $user->patient->middle_name : '') . ' ' . $user->patient->last_name . ($user->patient->extension_name ? ' ' . $user->patient->extension_name : '');
+            $patientID = $user->patient->id;
+
+            return response()->json([
+                'token' => $token,
+                'user_name' => $fullName,
+                'user_type' => $user->user_type,
+                'patient_id' => $patientID
+                
+            ]);
         }else if($user->user_type === 'admin'){
             $fullName = $user->admin->first_name . ($user->admin->middle_name ? ' ' . $user->admin->middle_name : '') . ' ' . $user->admin->last_name . ($user->admin->extension_name ? ' ' . $user->admin->extension_name : '');
+            $adminID = $user->admin->id;
+            return response()->json([
+                'token' => $token,
+                'user_name' => $fullName,
+                'user_type' => $user->user_type,
+                'admin' => $patientID
+                
+            ]);
         }
 
         
         
-        return response()->json([
-            'token' => $token,
-            'user_name' => $fullName,
-            'user_type' => $user->user_type
-        ]);
+        
 
     }
 
