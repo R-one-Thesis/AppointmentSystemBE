@@ -294,18 +294,20 @@ class PatientController extends Controller
             // Find the patient by ID
             $patient = Patient::findOrFail($id);
 
-            // Delete the corresponding user
-            $patient->user->delete();
-
-            // Delete the patient history
-            $patient->history->delete();
+            // Get the associated user ID
+            $userId = $patient->user_id;
 
             // Delete the patient
             $patient->delete();
 
+            // Delete the user using the user ID obtained from the patient
+            User::where('id', $userId)->delete();
+
+            // If you also need to delete the patient's history, do it here
+
             DB::commit();
 
-            return response()->json(['message' => 'Patient and associated user/history deleted successfully'], 200);
+            return response()->json(['message' => 'Patient and associated user deleted successfully'], 200);
         } catch (ModelNotFoundException $e) {
             // Handle the case where the patient is not found
             DB::rollBack();
@@ -315,6 +317,7 @@ class PatientController extends Controller
             DB::rollBack();
             return response()->json(['message' => 'An unexpected error occurred'], 500);
         }
-    }
+    }   
+
 
 }
