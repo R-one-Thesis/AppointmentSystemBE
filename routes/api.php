@@ -39,6 +39,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     Route::apiResource('admin', AdminController::class);
     Route::apiResource('patient', PatientController::class);
+    Route::get('book-schedules', [ScheduleController::class, 'bookSchedule']);
+    
 });
 // Route::get('view-doctors', [DoctorController::class, 'viewDoctors']);
 //     Route::post('add-doctors', [DoctorController::class, 'addDoctor']);

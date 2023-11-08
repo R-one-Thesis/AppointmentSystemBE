@@ -71,5 +71,50 @@ class ScheduleController extends Controller
             return response()->json(['error' => 'An error occurred while adding the schedule'], 500);
         }
     }
+
+    public function bookSchedule($id)
+    {
+        // Get the authenticated user's ID
+        $patientId = auth()->user()->id;
+
+        try {
+            DB::beginTransaction();
+
+            $schedule = Schedule::lockForUpdate()->findOrFail($id);
+
+            if ($schedule->booked) {
+                DB::rollBack();
+                return response()->json(['message' => 'Schedule is already booked'], 400);
+            }
+
+            $booking = new Booking([
+                'patient_id' => $patientId,
+            ]);
+
+            $schedule->bookings()->save($booking);
+
+            $schedule->update(['booked' => true]);
+
+            DB::commit();
+
+            return response()->json(['message' => 'Booking successful'], 201);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Schedule not found'], 404);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            $errors = $e->validator->getMessageBag();
+
+            // Handle validation errors here
+            return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
+        } catch (QueryException $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Database error occurred', 'error' => $e->getMessage()], 500);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
+        }
+    }
+
     
 }
