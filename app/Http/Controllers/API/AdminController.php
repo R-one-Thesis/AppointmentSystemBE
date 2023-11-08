@@ -54,7 +54,7 @@ class AdminController extends Controller
 
             $user = User::create([
                 'email' => $validatedData['email'],
-                'user_type' => "Admin",
+                'user_type' => "admin",
                 'password' => Hash::make($validatedData['password']),
             ]);
 
