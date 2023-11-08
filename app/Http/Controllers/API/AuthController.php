@@ -44,7 +44,7 @@ class AuthController extends Controller
                 'token' => $token,
                 'user_name' => $fullName,
                 'user_type' => $user->user_type,
-                'admin' => $patientID
+                'admin' => $adminID
                 
             ]);
         }
