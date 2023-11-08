@@ -283,14 +283,38 @@ class PatientController extends Controller
     }
 
 
-    /**
+    /*
      * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            // Find the patient by ID
+            $patient = Patient::findOrFail($id);
+
+            // Delete the corresponding user
+            $patient->user->delete();
+
+            // Delete the patient history
+            $patient->history->delete();
+
+            // Delete the patient
+            $patient->delete();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Patient and associated user/history deleted successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+            // Handle the case where the patient is not found
+            DB::rollBack();
+            return response()->json(['message' => 'Patient not found'], 404);
+        } catch (\Exception $e) {
+            // Handle other unexpected errors
+            DB::rollBack();
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
+        }
     }
+
 }
