@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PatientController extends Controller
 {
@@ -21,11 +22,6 @@ class PatientController extends Controller
     public function index()
     {
         $patients = Patient::all();
-        // $patientsData = $patients->map(function($patient){
-        //     return [
-        //         'physician' => ($patient->history->physician) ?? null,
-        //     ];
-        // });
 
         $patients->each(function ($patient) {
             $patient->email = $patient->user->email;
@@ -143,40 +139,59 @@ class PatientController extends Controller
 
             return response()->json(['message' => 'Patient registered successfully'], 201);
         } catch (ValidationException $e) {
-            // Validation errors
+            
             DB::rollBack();
     
             $errors = $e->validator->getMessageBag();
             
             if ($errors->has('email')) {
-                // Handle the specific email uniqueness error
+                
                 return response()->json(['message' => 'Email already in use'], 422);
             }
     
-            // Handle other validation errors here
+            
             return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
         } 
         catch (QueryException $e) {
-            // Database query errors
+           
             DB::rollBack();
             return response()->json(['message' => 'Database error occurred', 'error' => $e->getMessage()], 500);
         } catch (Exception $e) {
-            // Other unexpected errors
+            
             DB::rollBack();
             return response()->json(['message' => 'An unexpected error occurred'], 500);
         }
     }
 
-    /**
+    /*
      * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
+        try {
+        
+            $patient = Patient::findOrFail($id);
+            
+            $user = $patient->user;
+
+            
+            $history = $patient->history;
+            unset($patient->user, $patient->history);
+            
+            return response()->json([
+                'user' => $user,
+                'patient' => $patient,
+                'history' => $history
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            
+            return response()->json(['message' => 'Patient not found'], 404);
+        } catch (\Exception $e) {
+           
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
+        }
     }
+
 
     /*
      * Update the specified resource in storage.
@@ -291,31 +306,29 @@ class PatientController extends Controller
         try {
             DB::beginTransaction();
 
-            // Find the patient by ID
             $patient = Patient::findOrFail($id);
 
-            // Get the associated user ID
             $userId = $patient->user_id;
 
-            // Delete the patient
             $patient->delete();
 
-            // Delete the user using the user ID obtained from the patient
             User::where('id', $userId)->delete();
 
-            // If you also need to delete the patient's history, do it here
+            History::where('id', $userId)->delete();
 
             DB::commit();
 
             return response()->json(['message' => 'Patient and associated user deleted successfully'], 200);
         } catch (ModelNotFoundException $e) {
-            // Handle the case where the patient is not found
+
             DB::rollBack();
             return response()->json(['message' => 'Patient not found'], 404);
+
         } catch (\Exception $e) {
-            // Handle other unexpected errors
+
             DB::rollBack();
             return response()->json(['message' => 'An unexpected error occurred'], 500);
+            
         }
     }   
 

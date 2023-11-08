@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AdminController extends Controller
 {
@@ -97,29 +98,117 @@ class AdminController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+        
+            $admin = Admin::findOrFail($id);
+            
+            $user = $admin->user;
+
+            unset($admin->user);
+            
+            return response()->json([
+                'user' => $user,
+                'admin' => $admin
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            
+            return response()->json(['message' => 'Patient not found'], 404);
+        } catch (\Exception $e) {
+           
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
+        }
     }
 
-    /**
+    /*
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'email' => 'nullable|email',
+            'password' => 'nullable|string',
+            'first_name' => 'nullable|string',
+            'last_name' => 'nullable|string',
+            'middle_name' => 'nullable|string',
+            'extension_name' => 'nullable|string',
+            'birthday' => 'nullable|date',
+            'home_address' => 'nullable|string',
+            'mobile_number' => 'nullable|string',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $admin = Admin::findOrFail($id);
+
+            if (isset($validatedData['email'])) {
+                $admin->user->email = $validatedData['email'];
+                $admin->user->save();
+            }
+
+            $admin->update($validatedData);
+
+            DB::commit();
+
+            return response()->json(['message' => 'Admin updated successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+
+            DB::rollBack();
+            return response()->json(['message' => 'Admin not found'], 404);
+        } catch (ValidationException $e) {
+
+            DB::rollBack();
+            $errors = $e->validator->getMessageBag();
+
+            if ($errors->has('email')) {
+                return response()->json(['message' => 'Email already in use'], 422);
+            }
+
+            return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
+        } catch (QueryException $e) {
+
+            DB::rollBack();
+            return response()->json(['message' => 'Database error occurred', 'error' => $e->getMessage()], 500);
+
+        } catch (Exception $e) {
+
+            DB::rollBack();
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
+
+        }
     }
 
-    /**
+
+    /*
      * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+        try {
+
+            DB::beginTransaction();
+
+            $admin = Admin::findOrFail($id);
+
+            $userId = $admin->user_id;
+
+            $admin->delete();
+
+            User::where('id', $userId)->delete();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Patient and associated user deleted successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+
+            DB::rollBack();
+            return response()->json(['message' => 'Patient not found'], 404);
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
+
+        }
     }
 }
