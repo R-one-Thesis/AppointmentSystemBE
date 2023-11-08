@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Doctor;
+use App\Models\Booking;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -24,5 +25,9 @@ class Schedule extends Model
 
     public function doctor() {
         return $this->belongsTo(Doctor::class, 'doctors_id', 'id');
+    }
+
+    public function booking() {
+        return $this->hasOne(Booking::class, 'schedule_id', 'id');
     }
 }
