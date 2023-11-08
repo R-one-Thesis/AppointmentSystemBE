@@ -28,6 +28,6 @@ class Schedule extends Model
     }
 
     public function booking() {
-        return $this->hasOne(Booking::class, 'schedule_id', 'id');
+        return $this->hasMany(Booking::class, 'schedule_id', 'id');
     }
 }

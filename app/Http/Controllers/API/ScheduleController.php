@@ -94,8 +94,8 @@ class ScheduleController extends Controller
                 'schedule_id' => $id,
             ]);
 
-            $schedule->booking()->save($booking);
-
+            $booking->save();
+            
             $schedule->update(['booked' => true]);
 
             DB::commit();

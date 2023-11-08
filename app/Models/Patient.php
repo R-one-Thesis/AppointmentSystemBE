@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Booking;
 use App\Models\History;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,6 +44,10 @@ class Patient extends Model
 
     public function history() {
         return $this->hasOne(History::class);
+    }
+
+    public function booking() {
+        return $this->hasMany(Booking::class, 'patient_id', 'id');
     }
     
 }
