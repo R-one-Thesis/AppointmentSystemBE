@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\API;
 
 use Exception;
-use App\Models\Schedule;
 use App\Models\Booking;
+use App\Models\Patient;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 
 class ScheduleController extends Controller
 {
@@ -77,25 +78,27 @@ class ScheduleController extends Controller
     public function bookSchedule($id)
     {
         // Get the authenticated user's ID
-        $patientId = auth()->user()->id;
+        $patientId = Patient::select('id')
+                    ->where('user_id', '=',auth()->user()->id)
+                    ->first();
 
         try {
             DB::beginTransaction();
 
             $schedule = Schedule::lockForUpdate()->findOrFail($id);
 
-            if ($schedule->booked == 1) {
+            if ($schedule->booked == true) {
                 DB::rollBack();
                 return response()->json(['message' => 'Schedule is already booked'], 400);
             }
 
             $booking = new Booking([
-                'patient_id' => $patientId,
+                'patient_id' => $patientId->id,
                 'schedule_id' => $id,
             ]);
 
             $booking->save();
-
+            
             $schedule->update(['booked' => true]);
 
             DB::commit();
