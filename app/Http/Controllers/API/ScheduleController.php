@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API;
 
 use Exception;
 use App\Models\Schedule;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class ScheduleController extends Controller
 {
@@ -91,7 +93,7 @@ class ScheduleController extends Controller
                 'patient_id' => $patientId,
             ]);
 
-            $schedule->bookings()->save($booking);
+            $schedule->booking()->save($booking);
 
             $schedule->update(['booked' => true]);
 
@@ -110,9 +112,9 @@ class ScheduleController extends Controller
         } catch (QueryException $e) {
             DB::rollBack();
             return response()->json(['message' => 'Database error occurred', 'error' => $e->getMessage()], 500);
-        } catch (Exception $e) {
+        } catch (error) {
             DB::rollBack();
-            return response()->json(['message' => 'An unexpected error occurred'], 500);
+            return response()->json(['message' => error], 500);
         }
     }
 

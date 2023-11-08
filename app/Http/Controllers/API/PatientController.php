@@ -91,7 +91,7 @@ class PatientController extends Controller
 
             $user = User::create([
                 'email' => $validatedData['email'],
-                'user_type' => "Patient",
+                'user_type' => "patient",
                 'password' => Hash::make($validatedData['password']), 
             ]);
             
