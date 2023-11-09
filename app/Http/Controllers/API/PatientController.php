@@ -79,9 +79,9 @@ class PatientController extends Controller
             'conditions' => 'sometimes|array',
             'medication' => 'sometimes|string',
             'allergies' => 'sometimes|string',
-            'pregnant' => 'sometimes|string',
+            'pregnant' => 'sometimes|boolean',
             'expected_date' => 'sometimes|date',
-            'mens_problems' => 'sometimes|string',
+            'mens_problems' => 'sometimes|boolean',
             
         ]);
 
@@ -122,7 +122,7 @@ class PatientController extends Controller
             $historyFields = [
                 'physician', 'physaddress', 'reason', 'hospitalization_reason', 
                 'conditions', 'medication', 'allergies', 'pregnant', 
-                'expected_datemens_problems', 'mens_problems'
+                'expected_date', 'mens_problems'
             ];
             
             $patientHistoryData = ['patient_id' => $patient->id];
@@ -226,9 +226,9 @@ class PatientController extends Controller
             'conditions' => 'nullable|array',
             'medication' => 'nullable|string',
             'allergies' => 'nullable|string',
-            'pregnant' => 'nullable|string',
+            'pregnant' => 'nullable|boolean',
             'expected_date' => 'nullable|date',
-            'mens_problems' => 'nullable|string',
+            'mens_problems' => 'nullable|boolean',
         ]);
         
         try {
