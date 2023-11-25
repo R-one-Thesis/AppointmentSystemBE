@@ -38,12 +38,19 @@ class PatientController extends Controller
                 $patient->expected_date = $patient->history->expected_date ?? "";
                 $patient->mens_problems = $patient->history->mens_problems ?? "";
             }
+            $imageRecords = [];
             if ($patient->patientImageRecord) {
-                $patient->patientImageRecord = $patient->patientImageRecord->image_type ?? "";
-                $patient->patientImageRecord = $patient->patientImageRecord->image_path ?? "";
+                $imageRecords = $patient->patientImageRecord->map(function ($record) {
+                    return [
+                        'image_type' => $record->image_type,
+                        'image_path' => $record->image_path,
+                    ];
+                });
             }
+        
+            $patient->image_records = $imageRecords->toArray();
 
-            unset($patient->user,$patient->history);
+            unset($patient->user,$patient->history,$patient->patientImageRecord);
 
         });
 
