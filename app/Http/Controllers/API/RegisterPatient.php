@@ -28,6 +28,7 @@ class RegisterPatient extends Controller
             'sex' => 'required|in:Male,Female',
             'home_address' => 'required|string',
             'mobile_number' => 'sometimes|string',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         try {
@@ -68,6 +69,19 @@ class RegisterPatient extends Controller
 
             $patientHistoryData = ['patient_id' => $patient->id];
             $patientHistory = History::create($patientHistoryData);
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $image->storeAs('patient_images', $imageName); // Example: Store images in 'patient_images' directory
+    
+                $imageRecord = [
+                    'patient_id' => $patient->id,
+                    'image_type' => 'ID', // Example: You can define types like 'profile', 'document', etc.
+                    'image_path' => $imageName,
+                ];
+    
+                PatientImageRecord::create($imageRecord);
+            }   
 
             DB::commit();
 

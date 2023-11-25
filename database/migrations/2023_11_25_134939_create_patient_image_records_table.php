@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('patient_image_records', function (Blueprint $table) {
             $table->id();
-            $table->string('service_type');
-            $table->decimal('price', 10, 2);
-            $table->decimal('duration', 8, 2);
+            $table->unsignedBigInteger('patient_id');
+            $table->string('image_type');
+            $table->string('image_path'); // Assuming you store the path to the image file
             $table->timestamps();
+
+            $table->foreign('patient_id')->references('id')->on('patients');
         });
     }
 
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('services');
+        Schema::dropIfExists('patient_image_records');
     }
 };

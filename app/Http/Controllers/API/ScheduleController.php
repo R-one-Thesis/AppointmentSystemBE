@@ -42,10 +42,9 @@ class ScheduleController extends Controller
     public function addSchedule(Request $request) {
         $validator = Validator::make($request->all(), [
             'doctors_id' => 'required',
-            'services' => 'required|array',
             'date' => 'required|date',
             'time_start' => 'required|date_format:H:i',
-            'duration' => 'required',
+            
         ]);
         Log::info('Input data: ' . json_encode($request->all()));
         if ($validator->fails()) {
@@ -62,10 +61,8 @@ class ScheduleController extends Controller
             // Use this line instead:
             Schedule::create([
                 'doctors_id' => $scheduleData['doctors_id']['doctors_id'],
-                'services' => $scheduleData['services'],
                 'date' => $scheduleData['date'],
                 'time_start' => $scheduleData['time_start'],
-                'duration' => $scheduleData['duration']['duration'],
                 'booked' => false,
             ]);
             
@@ -75,16 +72,19 @@ class ScheduleController extends Controller
         }
     }
 
-    public function bookSchedule($id)
+    public function bookSchedule(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'services' => 'required|array',
+            'duration' => 'required',
+        ]);
         // Get the authenticated user's ID
         $patientId = Patient::select('id')
                     ->where('user_id', '=',auth()->user()->id)
                     ->first();
-
         try {
             DB::beginTransaction();
-
+            $scheduleData = $request->all();
             $schedule = Schedule::lockForUpdate()->findOrFail($id);
 
             if ($schedule->booked == true) {
@@ -99,7 +99,7 @@ class ScheduleController extends Controller
 
             $booking->save();
             
-            $schedule->update(['booked' => true]);
+            $schedule->update(['booked' => true, 'services' => $scheduleData['services'], 'duration' => $scheduleData['duration']['duration']]);
 
             DB::commit();
 

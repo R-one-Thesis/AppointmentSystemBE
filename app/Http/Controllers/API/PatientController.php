@@ -38,6 +38,10 @@ class PatientController extends Controller
                 $patient->expected_date = $patient->history->expected_date ?? "";
                 $patient->mens_problems = $patient->history->mens_problems ?? "";
             }
+            if ($patient->patientImageRecord) {
+                $patient->patientImageRecord = $patient->patientImageRecord->image_type ?? "";
+                $patient->patientImageRecord = $patient->patientImageRecord->image_path ?? "";
+            }
 
             unset($patient->user,$patient->history);
 
