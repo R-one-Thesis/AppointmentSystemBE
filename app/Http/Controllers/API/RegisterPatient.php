@@ -6,6 +6,7 @@ use Exception;
 use App\Models\User;
 use App\Models\History;
 use App\Models\Patient;
+use App\Models\PatientImageRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -28,8 +29,9 @@ class RegisterPatient extends Controller
             'sex' => 'required|in:Male,Female',
             'home_address' => 'required|string',
             'mobile_number' => 'sometimes|string',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+          ]);
+        Log::info('Input data: ' . json_encode($request->all()));
 
         try {
 
@@ -72,16 +74,16 @@ class RegisterPatient extends Controller
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $image->storeAs('patient_images', $imageName); // Example: Store images in 'patient_images' directory
-    
+                $image->storeAs('patient_images', $imageName);
+              
                 $imageRecord = [
-                    'patient_id' => $patient->id,
-                    'image_type' => 'ID', // Example: You can define types like 'profile', 'document', etc.
-                    'image_path' => $imageName,
+                  'patient_id' => $patient->id,
+                  'image_type' => 'ID',
+                  'image_path' => $imageName,
                 ];
-    
+              
                 PatientImageRecord::create($imageRecord);
-            }   
+              }
 
             DB::commit();
 
