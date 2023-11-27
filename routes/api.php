@@ -30,6 +30,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     // Dentist or Doctor
     Route::get('view-doctors', [DoctorController::class, 'viewDoctors']);
     Route::post('add-doctors', [DoctorController::class, 'addDoctor']);
+    Route::put('edit-doctors/{id}', [DoctorController::class, 'editDoctor']);
+    Route::delete('delete-doctors/{id}', [DoctorController::class, 'deleteDoctor']);
     Route::post('add-schedule', [ScheduleController::class, 'addSchedule']);
 
     // Route::get('patients', [PatientController::class, 'viewAllPatients']);

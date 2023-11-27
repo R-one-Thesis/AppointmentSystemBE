@@ -27,7 +27,7 @@ class DoctorController extends Controller
             'dentist' => 'required|string',
             'specialization' => 'required|string',
             'mobile_number' => 'required|string',
-            'email' => 'required|email|unique:dentist,email',
+            'email' => 'required|email|unique:doctors,email',
         ]);
         Log::info('Input data: ' . json_encode($request->all()));
         if ($validator->fails()) {
@@ -47,7 +47,7 @@ class DoctorController extends Controller
             'dentist' => 'sometimes|string',
             'specialization' => 'sometimes|string',
             'mobile_number' => 'sometimes|string',
-            'email' => 'sometimes|email|unique:dentist,email,' . $id,
+            'email' => 'sometimes|email|unique:doctors,email,' . $id,
         ]);
     
         if ($validator->fails()) {
