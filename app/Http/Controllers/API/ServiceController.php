@@ -30,16 +30,22 @@ class ServiceController extends Controller
         $validatedData = $request->validate([
             'service_type' => 'required|string',
             'price' => 'required|numeric',
-            'duration' => 'required|numeric',
+            'duration' => 'required',
         ]);
     
         try {
+            // Convert duration to a number if it's an array
+            $validatedData['duration'] = is_array($validatedData['duration'])
+                ? reset($validatedData['duration'])
+                : $validatedData['duration'];
+    
             $service = Services::create($validatedData);
             return response()->json(['message' => 'Service created successfully', 'service' => $service], 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => 'An error occurred while creating the service'], 500);
         }
     }
+    
 
     /**
      * Display the specified resource.
@@ -70,22 +76,28 @@ class ServiceController extends Controller
         $validatedData = $request->validate([
             'service_type' => 'sometimes|string',
             'price' => 'sometimes|numeric',
-            'duration' => 'sometimes|numeric',
+            'duration' => 'sometimes',
         ]);
-    
+
         try {
             $service = Services::find($id);
-    
+
             if (!$service) {
                 return response()->json(['error' => 'Service not found'], 404);
             }
-    
+
+            // Convert the duration to a numeric value
+            if (isset($validatedData['duration']) && is_array($validatedData['duration'])) {
+                $validatedData['duration'] = reset($validatedData['duration']);
+            }
+
             $service->update($validatedData);
             return response()->json(['message' => 'Service updated successfully', 'service' => $service], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => 'An error occurred while updating the service'], 500);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class DoctorController extends Controller
 {
@@ -26,9 +27,9 @@ class DoctorController extends Controller
             'dentist' => 'required|string',
             'specialization' => 'required|string',
             'mobile_number' => 'required|string',
-            'email' => 'required|email|unique:dentists,email',
+            'email' => 'required|email|unique:dentist,email',
         ]);
-
+        Log::info('Input data: ' . json_encode($request->all()));
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
@@ -46,7 +47,7 @@ class DoctorController extends Controller
             'dentist' => 'sometimes|string',
             'specialization' => 'sometimes|string',
             'mobile_number' => 'sometimes|string',
-            'email' => 'sometimes|email|unique:dentists,email,' . $id,
+            'email' => 'sometimes|email|unique:dentist,email,' . $id,
         ]);
     
         if ($validator->fails()) {
