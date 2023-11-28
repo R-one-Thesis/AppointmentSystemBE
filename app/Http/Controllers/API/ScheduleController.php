@@ -12,13 +12,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-require 'vendor/autoload.php';
-
-use Infobip\Api\SmsApi;
-use Infobip\Configuration;
-use Infobip\Model\SmsAdvancedTextualRequest;
-use Infobip\Model\SmsDestination;
-use Infobip\Model\SmsTextualMessage;
 
 class ScheduleController extends Controller
 {
