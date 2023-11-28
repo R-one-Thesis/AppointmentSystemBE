@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('date');
             $table->time('time_start');
             $table->decimal('duration', 8, 2)->nullable();
-            $table->decimal('price', 10, 2);
+            $table->decimal('price', 10, 2)->nullable();
             $table->boolean('booked')->default(false);
             $table->timestamps();
 
