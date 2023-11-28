@@ -50,7 +50,7 @@ class PatientController extends Controller
         
             $patient->image_records = $imageRecords->toArray();
 
-            unset($patient->user,$patient->history,$patient->patientImageRecord);
+            unset($patient->user,$patient->history, $patient->patientImageRecord);
 
         });
 
@@ -187,7 +187,18 @@ class PatientController extends Controller
 
             
             $history = $patient->history;
-            unset($patient->user, $patient->history);
+            $imageRecords = [];
+            if ($patient->patientImageRecord) {
+                $imageRecords = $patient->patientImageRecord->map(function ($record) {
+                    return [
+                        'image_type' => $record->image_type,
+                        'image_path' => $record->image_path,
+                    ];
+                });
+            }
+        
+            $patient->image_records = $imageRecords->toArray();
+            unset($patient->user, $patient->history,  $patient->patientImageRecord);
             
             return response()->json([
                 'user' => $user,
