@@ -76,30 +76,37 @@ class ScheduleController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'services' => 'required|array',
-            'duration' => 'required',
+            'services.*' => 'exists:services,id', // Check if each service ID exists in the services table
         ]);
-        // Get the authenticated user's ID
-        $patientId = Patient::select('id')
-                    ->where('user_id', '=',auth()->user()->id)
-                    ->first();
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+        }
+
         try {
             DB::beginTransaction();
-            $scheduleData = $request->all();
             $schedule = Schedule::lockForUpdate()->findOrFail($id);
 
-            if ($schedule->booked == true) {
+            if ($schedule->booked) {
                 DB::rollBack();
                 return response()->json(['message' => 'Schedule is already booked'], 400);
             }
 
+            // Get the authenticated user's ID
+            $patientId = Patient::where('user_id', auth()->user()->id)->value('id');
+
+            $schedule->services = $request->input('services'); // Assign selected services to the schedule
+            $schedule->duration = Service::whereIn('id', $request->input('services'))->sum('duration'); // Calculate total duration
+
             $booking = new Booking([
-                'patient_id' => $patientId->id,
+                'patient_id' => $patientId,
                 'schedule_id' => $id,
             ]);
 
             $booking->save();
             
-            $schedule->update(['booked' => true, 'services' => $scheduleData['services'], 'duration' => $scheduleData['duration']['duration']]);
+            $schedule->booked = true;
+            $schedule->save();
 
             DB::commit();
 
@@ -107,20 +114,12 @@ class ScheduleController extends Controller
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return response()->json(['message' => 'Schedule not found'], 404);
-        } catch (ValidationException $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
-            $errors = $e->validator->getMessageBag();
-
-            // Handle validation errors here
-            return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
-        } catch (QueryException $e) {
-            DB::rollBack();
-            return response()->json(['message' => 'Database error occurred', 'error' => $e->getMessage()], 500);
-        } catch (error) {
-            DB::rollBack();
-            return response()->json(['message' => error], 500);
+            return response()->json(['message' => 'An error occurred', 'error' => $e->getMessage()], 500);
         }
     }
+
 
     
 }
