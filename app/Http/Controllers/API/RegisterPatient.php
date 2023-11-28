@@ -74,12 +74,12 @@ class RegisterPatient extends Controller
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $image->storeAs('patient_images', $imageName);
+                $imagePath = $image->storeAs('patient_images', $imageName, 'public');
               
                 $imageRecord = [
                   'patient_id' => $patient->id,
                   'image_type' => 'ID',
-                  'image_path' => $imageName,
+                  'image_path' => $imagePath,
                 ];
               
                 PatientImageRecord::create($imageRecord);

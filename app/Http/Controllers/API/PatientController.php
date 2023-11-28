@@ -93,6 +93,7 @@ class PatientController extends Controller
             'pregnant' => 'sometimes|boolean',
             'expected_date' => 'sometimes|date',
             'mens_problems' => 'sometimes|boolean',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             
         ]);
 
@@ -145,6 +146,19 @@ class PatientController extends Controller
             }
             
             $patientHistory = History::create($patientHistoryData);
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('patient_images', $imageName, 'public');
+              
+                $imageRecord = [
+                  'patient_id' => $patient->id,
+                  'image_type' => 'ID',
+                  'image_path' => $imagePath,
+                ];
+              
+                PatientImageRecord::create($imageRecord);
+              }
             
             DB::commit();
 
