@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         User::insert($userTypes);
-        Patient::insert($patient);
+        
         Admin::insert($admin);
         Doctor::insert($doctors);
     }
