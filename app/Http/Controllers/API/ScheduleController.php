@@ -96,10 +96,10 @@ class ScheduleController extends Controller
             // Get the authenticated user's ID
             $patientId = Patient::where('user_id', auth()->user()->id)->value('id');
 
-            $serviceTypeArray = Service::whereIn('id', $request->input('services'))->pluck('service_type')->toArray();
+            $serviceTypeArray = Services::whereIn('id', $request->input('services'))->pluck('service_type')->toArray();
 
             $schedule->services = $serviceTypeArray; // Assign selected service types to the schedule
-            $schedule->duration = Service::whereIn('id', $request->input('services'))->sum('duration'); // Calculate total duration
+            $schedule->duration = Services::whereIn('id', $request->input('services'))->sum('duration'); // Calculate total duration
 
             $booking = new Booking([
                 'patient_id' => $patientId,
