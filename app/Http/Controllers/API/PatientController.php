@@ -149,7 +149,8 @@ class PatientController extends Controller
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('patient_images', $imageName, 'public');
+                $image->move(public_path('patient_images'), $imageName);
+                $imagePath = 'patient_images/' . $imageName; // Relative path to the image
               
                 $imageRecord = [
                   'patient_id' => $patient->id,
