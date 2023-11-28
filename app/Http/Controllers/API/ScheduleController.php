@@ -100,6 +100,7 @@ class ScheduleController extends Controller
 
             $schedule->services = $serviceTypeArray; // Assign selected service types to the schedule
             $schedule->duration = Services::whereIn('id', $request->input('services'))->sum('duration'); // Calculate total duration
+            $schedule->price = Services::whereIn('id', $request->input('services'))->sum('price');
 
             $booking = new Booking([
                 'patient_id' => $patientId,
@@ -111,38 +112,7 @@ class ScheduleController extends Controller
             $schedule->booked = true;
             $schedule->save();
             $patientMobileNumber = Patient::where('user_id', auth()->user()->id)->value('mobile_number');
-            if(isset($patientMobileNumber)) {
-
-                $BASE_URL = "https://4384e8.api.infobip.com";
-                $API_KEY = "c23190f9a71488ae4973dcdd8b17962a-86aa644a-f873-4af8-b975-04e39a97deca";
-                $SENDER = "InfoSMS";
-                $MESSAGE_TEXT = "Booking successful! Your schedule details here..."; // Customize your message
-        
-                $configuration = new Configuration(host: $BASE_URL, apiKey: $API_KEY);
-                $sendSmsApi = new SmsApi(config: $configuration);
-        
-                $destination = new SmsDestination(
-                    to: $patientMobileNumber
-                );
-        
-                $message = new SmsTextualMessage(destinations: [$destination], from: $SENDER, text: $MESSAGE_TEXT);
-                $request = new SmsAdvancedTextualRequest(messages: [$message]);
-        
-                // Send SMS
-                $smsResponse = $sendSmsApi->sendSmsMessage($request);
-        
-                // Handle SMS response if needed
-                // For example:
-                if ($smsResponse) {
-                    // SMS sent successfully
-                    // You might want to log this or perform additional actions
-                } else {
-                    // SMS sending failed
-                    // Log or handle the failure accordingly
-                }
-                
-            }
-
+           
             DB::commit();
 
             return response()->json(['message' => 'Booking successful'], 201);
