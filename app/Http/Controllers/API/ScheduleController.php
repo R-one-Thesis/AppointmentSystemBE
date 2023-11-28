@@ -32,6 +32,7 @@ class ScheduleController extends Controller
                 "date" => $data->date,
                 "time_start" => $data->time_start,
                 "duration" => $data->duration,
+                "price" => $data->price,
                 "booked" => $data->booked,
                 
             ];
