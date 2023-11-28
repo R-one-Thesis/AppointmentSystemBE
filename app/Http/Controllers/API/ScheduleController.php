@@ -110,6 +110,42 @@ class ScheduleController extends Controller
             
             $schedule->booked = true;
             $schedule->save();
+            $patientMobileNumber = Patient::where('user_id', auth()->user()->id)->value('mobile_number');
+            if(isset($patientMobileNumber)) {
+
+            
+                $scheduleDetails = "Schedule ID: $id\nServices: " . implode(', ', $serviceTypeArray) . "\nDuration: {$schedule->duration}";
+
+                $smsData = [
+                    'apikey' => '0e6c6f4d-2be5-43f4-b1c8-347fa1cb599d',
+                    'mobile_number' => $patientMobileNumber, // Replace with the desired mobile number
+                    'message' => "Booking successful!\n$scheduleDetails"
+                ];
+
+                $smsUrl = 'https://sms-api.herndevs.com/api/sms/send';
+                $ch = curl_init($smsUrl);
+
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($smsData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $headers = ['Content-Type: application/x-www-form-urlencoded'];
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+                $smsResponse = curl_exec($ch);
+                curl_close($ch);
+
+                // Handle SMS response if needed
+                // For example:
+                if ($smsResponse) {
+                    // SMS sent successfully
+                    // You might want to log this or perform additional actions
+                    // e.g., return a success message
+                } else {
+                    // SMS sending failed
+                    // Log or handle the failure accordingly
+                }
+            }
 
             DB::commit();
 
