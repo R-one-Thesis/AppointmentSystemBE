@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Booking;
 use App\Models\Patient;
 use App\Models\Schedule;
+use App\Models\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -96,7 +97,7 @@ class ScheduleController extends Controller
             $patientId = Patient::where('user_id', auth()->user()->id)->value('id');
 
             $schedule->services = $request->input('services'); // Assign selected services to the schedule
-            $schedule->duration = Service::whereIn('id', $request->input('services'))->sum('duration'); // Calculate total duration
+            $schedule->duration = Services::whereIn('id', $request->input('services'))->sum('duration'); // Calculate total duration
 
             $booking = new Booking([
                 'patient_id' => $patientId,
