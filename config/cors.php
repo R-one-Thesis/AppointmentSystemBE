@@ -19,8 +19,8 @@ return [
 
     'allowed_methods' => ['*'],
 
-    // 'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:9000')],
-    'allowed_origins' => ['*'], // Allow requests from any origin
+    'allowed_origins' => [env('FRONTEND_URL', 'https://appointment-fe.ronewebsolutions.com')],
+    // 'allowed_origins' => ['*'], // Allow requests from any origin
 
     'allowed_origins_patterns' => [],
 
