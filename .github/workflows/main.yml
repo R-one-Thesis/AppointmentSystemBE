@@ -37,6 +37,9 @@ jobs:
       run: composer self-update
     - name: Composer clear cache
       run: composer clear-cache
+    - name: Specify PHP Version for Composer
+      run: composer config platform.php 8.2.13
+
     - name: Update Composer Lock File
       run: composer update --no-scripts --no-progress 
     - name: Generate Laravel Encryption Key
