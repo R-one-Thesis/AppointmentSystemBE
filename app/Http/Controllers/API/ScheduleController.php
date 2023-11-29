@@ -144,6 +144,14 @@ class ScheduleController extends Controller
             "duration" => $schedule->duration,
             "price" => $schedule->price,
             "booked" => $schedule->booked,
+            "bookings" => $schedule->booking->map(function($booking) {
+                return [
+                    "id" => $booking->id,
+                    "patient_id" => $booking->patient_id,
+                    "patient_name" => $booking->patient->first_name . ' ' . $booking->patient->last_name,
+                    // Add other patient information if needed
+                ];
+            }),
         ];
     
         return response()->json(['message' => 'Data found', 'schedule' => $scheduleDetails]);
