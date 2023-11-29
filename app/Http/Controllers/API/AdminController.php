@@ -211,4 +211,58 @@ class AdminController extends Controller
 
         }
     }
+
+
+    public function addPatientImages(Request $request, $id) {
+        $validatedData = $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+          ]);
+
+          try {
+
+            DB::beginTransaction();
+
+            
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('patient_images'), $imageName);
+                $imagePath = 'patient_images/' . $imageName; // Relative path to the image
+              
+                $imageRecord = [
+                  'patient_id' => $patient->id,
+                  'image_type' => 'ID',
+                  'image_path' => $imagePath,
+                ];
+              
+                PatientImageRecord::create($imageRecord);
+              }
+
+            DB::commit();
+
+            return response()->json(['message' => 'Image successfully Uploaded'], 201);
+        } catch (ValidationException $e) {
+            // Validation errors
+            DB::rollBack();
+    
+            $errors = $e->validator->getMessageBag();
+            
+            if ($errors->has('email')) {
+                // Handle the specific email uniqueness error
+                return response()->json(['message' => 'Email already in use'], 422);
+            }
+    
+            // Handle other validation errors here
+            return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
+        } 
+        catch (QueryException $e) {
+            // Database query errors
+            DB::rollBack();
+            return response()->json(['message' => 'Database error occurred', 'error' => $e->getMessage()], 500);
+        } catch (Exception $e) {
+            // Other unexpected errors
+            DB::rollBack();
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
+        }
+    }
 }
