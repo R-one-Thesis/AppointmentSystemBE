@@ -25,7 +25,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('view-schedules', [ScheduleController::class, 'viewSchedules']);
 Route::post('register', [RegisterPatient::class, 'registerPatient']);
 
-
+ 
 Route::group(['middleware' => ['auth:sanctum']], function() {
     // Dentist or Doctor
     Route::get('view-doctors', [DoctorController::class, 'viewDoctors']);
