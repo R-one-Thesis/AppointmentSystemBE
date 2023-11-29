@@ -51,7 +51,7 @@ return [
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path('/logs/laravel.log'),
             'ignore_exceptions' => false,
         ],
 
