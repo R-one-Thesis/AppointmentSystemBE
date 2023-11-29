@@ -39,6 +39,8 @@ jobs:
       run: php artisan config:cache
     - name: Clear route
       run: php artisan route:clear
+    - name: Migrate Seed
+      run: php artisan migrate:fresh --seed
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
