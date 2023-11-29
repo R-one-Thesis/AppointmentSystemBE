@@ -41,7 +41,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('logout', [AuthController::class, 'logout']);
 
     Route::apiResource('admin', AdminController::class);
-    Route::post('admin', [AdminController::class, 'addPatientImages']);
+    Route::post('addPatientImages', [AdminController::class, 'addPatientImages']);
     Route::apiResource('patient', PatientController::class);
     Route::apiResource('services', ServiceController::class);
     Route::put('book-schedules/{id}', [ScheduleController::class, 'bookSchedule']);
