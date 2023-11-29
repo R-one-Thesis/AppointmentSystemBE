@@ -30,17 +30,21 @@ jobs:
         sudo mv composer.phar /usr/local/bin/composer
     - name: Update Composer Lock File
       run: composer update --no-scripts --no-progress
-
+  
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    - name: Composer self update
+      run: composer self-update
+    - name: Composer clear cache
+      run: composer clear-cache
+    - name: Update Composer Lock File
+      run: composer update --no-scripts --no-progress 
     - name: Generate Laravel Encryption Key
       run: php artisan key:generate
     - name: Clear Cache
       run: php artisan config:cache
     - name: Clear route
       run: php artisan route:clear
-    - name: Migrate Seed
-      run: php artisan migrate:fresh --seed
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
