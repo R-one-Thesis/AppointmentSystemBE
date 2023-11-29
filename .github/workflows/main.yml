@@ -78,3 +78,6 @@ jobs:
     - name: Deploy to Hostinger
       run: |
           sshpass -p '${{ secrets.SSH_PASS }}' rsync -avz -e "ssh -p 65002" ./ u102654923@151.106.124.122:/home/u102654923/domains/ronewebsolutions.com/public_html/appointment-be
+
+    - name: Check PHP Version
+      run: php -v
