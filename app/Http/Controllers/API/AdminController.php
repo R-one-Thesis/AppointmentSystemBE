@@ -230,8 +230,8 @@ class AdminController extends Controller
                 $imagePath = 'patient_images/' . $imageName; // Relative path to the image
               
                 $imageRecord = [
-                  'patient_id' => $patient->id,
-                  'image_type' => 'ID',
+                  'patient_id' => $id,
+                  'image_type' => 'Documents',
                   'image_path' => $imagePath,
                 ];
               
