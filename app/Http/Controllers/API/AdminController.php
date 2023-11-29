@@ -6,6 +6,7 @@ use Exception;
 use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use App\Models\PatientImageRecord;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
