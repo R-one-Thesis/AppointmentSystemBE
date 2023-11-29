@@ -126,6 +126,30 @@ class ScheduleController extends Controller
         }
     }
 
+    public function getSchedule($id) {
+        $schedule = Schedule::find($id);
+    
+        if (!$schedule) {
+            return response()->json(['message' => 'No data found']);
+        }
+    
+        $scheduleDetails = [
+            "id" => $schedule->id,
+            "doctors_id" => $schedule->doctors_id,
+            "dentist_name" => $schedule->doctor->dentist,
+            "specialization" => $schedule->doctor->specialization,
+            "services" => $schedule->services,
+            "date" => $schedule->date,
+            "time_start" => $schedule->time_start,
+            "duration" => $schedule->duration,
+            "price" => $schedule->price,
+            "booked" => $schedule->booked,
+        ];
+    
+        return response()->json(['message' => 'Data found', 'schedule' => $scheduleDetails]);
+    }
+    
+
 
     
 }
