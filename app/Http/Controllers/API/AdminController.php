@@ -263,7 +263,7 @@ class AdminController extends Controller
         } catch (Exception $e) {
             // Other unexpected errors
             DB::rollBack();
-            return response()->json(['message' => 'An unexpected error occurred'], 500);
+            return response()->json(['message' => $e], 500);
         }
     }
 }
