@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Exception;
 use App\Models\Booking;
 use App\Models\Patient;
+use Twilio\Rest\Client;
 use App\Models\Schedule;
 use App\Models\Services;
 use Illuminate\Http\Request;
