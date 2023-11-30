@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Booking;
 use App\Models\History;
+use App\Models\PatientImageRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -48,6 +49,10 @@ class Patient extends Model
 
     public function booking() {
         return $this->hasMany(Booking::class, 'patient_id', 'id');
+    }
+
+    public function patientImageRecord() {
+        return $this->hasMany(PatientImageRecord::class, 'patient_id', 'id');
     }
     
 }

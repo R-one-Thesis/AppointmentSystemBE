@@ -33,16 +33,7 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        $patient = [
-            [
-                'user_id' => 1,
-                'first_name' => 'Jim',
-                'last_name' => 'Lao',
-                'sex' => 'male',
-                'home_address' => 'barra opol',
-                'marital_status' => 'single'
-            ]
-        ];
+        
 
         $admin = [
             [
@@ -87,7 +78,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         User::insert($userTypes);
-        Patient::insert($patient);
+        
         Admin::insert($admin);
         Doctor::insert($doctors);
     }

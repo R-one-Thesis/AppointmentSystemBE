@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Booking;
 use App\Models\Patient;
 use App\Models\Schedule;
+use App\Models\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -31,6 +32,7 @@ class ScheduleController extends Controller
                 "date" => $data->date,
                 "time_start" => $data->time_start,
                 "duration" => $data->duration,
+                "price" => $data->price,
                 "booked" => $data->booked,
                 
             ];
@@ -42,10 +44,9 @@ class ScheduleController extends Controller
     public function addSchedule(Request $request) {
         $validator = Validator::make($request->all(), [
             'doctors_id' => 'required',
-            'services' => 'required|array',
             'date' => 'required|date',
             'time_start' => 'required|date_format:H:i',
-            'duration' => 'required',
+            
         ]);
         Log::info('Input data: ' . json_encode($request->all()));
         if ($validator->fails()) {
@@ -62,10 +63,8 @@ class ScheduleController extends Controller
             // Use this line instead:
             Schedule::create([
                 'doctors_id' => $scheduleData['doctors_id']['doctors_id'],
-                'services' => $scheduleData['services'],
                 'date' => $scheduleData['date'],
                 'time_start' => $scheduleData['time_start'],
-                'duration' => $scheduleData['duration']['duration'],
                 'booked' => false,
             ]);
             
@@ -75,52 +74,90 @@ class ScheduleController extends Controller
         }
     }
 
-    public function bookSchedule($id)
+    public function bookSchedule(Request $request, $id)
     {
-        // Get the authenticated user's ID
-        $patientId = Patient::select('id')
-                    ->where('user_id', '=',auth()->user()->id)
-                    ->first();
+        $validator = Validator::make($request->all(), [
+            'services' => 'required|array',
+            'services.*' => 'exists:services,id', // Check if each service ID exists in the services table
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+        }
 
         try {
             DB::beginTransaction();
-
             $schedule = Schedule::lockForUpdate()->findOrFail($id);
 
-            if ($schedule->booked == true) {
+            if ($schedule->booked) {
                 DB::rollBack();
                 return response()->json(['message' => 'Schedule is already booked'], 400);
             }
 
+            // Get the authenticated user's ID
+            $patientId = Patient::where('user_id', auth()->user()->id)->value('id');
+
+            $serviceTypeArray = Services::whereIn('id', $request->input('services'))->pluck('service_type')->toArray();
+
+            $schedule->services = $serviceTypeArray; // Assign selected service types to the schedule
+            $schedule->duration = Services::whereIn('id', $request->input('services'))->sum('duration'); // Calculate total duration
+            $schedule->price = Services::whereIn('id', $request->input('services'))->sum('price');
+
             $booking = new Booking([
-                'patient_id' => $patientId->id,
+                'patient_id' => $patientId,
                 'schedule_id' => $id,
             ]);
 
             $booking->save();
             
-            $schedule->update(['booked' => true]);
-
+            $schedule->booked = true;
+            $schedule->save();
+            $patientMobileNumber = Patient::where('user_id', auth()->user()->id)->value('mobile_number');
+           
             DB::commit();
 
             return response()->json(['message' => 'Booking successful'], 201);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return response()->json(['message' => 'Schedule not found'], 404);
-        } catch (ValidationException $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
-            $errors = $e->validator->getMessageBag();
-
-            // Handle validation errors here
-            return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
-        } catch (QueryException $e) {
-            DB::rollBack();
-            return response()->json(['message' => 'Database error occurred', 'error' => $e->getMessage()], 500);
-        } catch (error) {
-            DB::rollBack();
-            return response()->json(['message' => error], 500);
+            return response()->json(['message' => 'An error occurred', 'error' => $e->getMessage()], 500);
         }
     }
+
+    public function getSchedule($id) {
+        $schedule = Schedule::find($id);
+    
+        if (!$schedule) {
+            return response()->json(['message' => 'No data found']);
+        }
+    
+        $scheduleDetails = [
+            "id" => $schedule->id,
+            "doctors_id" => $schedule->doctors_id,
+            "dentist_name" => $schedule->doctor->dentist,
+            "specialization" => $schedule->doctor->specialization,
+            "services" => $schedule->services,
+            "date" => $schedule->date,
+            "time_start" => $schedule->time_start,
+            "duration" => $schedule->duration,
+            "price" => $schedule->price,
+            "booked" => $schedule->booked,
+            "bookings" => $schedule->booking->map(function($booking) {
+                return [
+                    "id" => $booking->id,
+                    "patient_id" => $booking->patient_id,
+                    "patient_name" => $booking->patient->first_name . ' ' . $booking->patient->last_name,
+                    // Add other patient information if needed
+                ];
+            }),
+        ];
+    
+        return response()->json(['message' => 'Data found', 'schedule' => $scheduleDetails]);
+    }
+    
+
 
     
 }

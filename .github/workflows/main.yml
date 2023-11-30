@@ -30,9 +30,18 @@ jobs:
         sudo mv composer.phar /usr/local/bin/composer
     - name: Update Composer Lock File
       run: composer update --no-scripts --no-progress
-
+  
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    - name: Composer self update
+      run: composer self-update
+    - name: Composer clear cache
+      run: composer clear-cache
+    - name: Specify PHP Version for Composer
+      run: composer config platform.php 8.2.13
+
+    - name: Update Composer Lock File
+      run: composer update --no-scripts --no-progress 
     - name: Generate Laravel Encryption Key
       run: php artisan key:generate
     - name: Clear Cache
@@ -72,3 +81,6 @@ jobs:
     - name: Deploy to Hostinger
       run: |
           sshpass -p '${{ secrets.SSH_PASS }}' rsync -avz -e "ssh -p 65002" ./ u102654923@151.106.124.122:/home/u102654923/domains/ronewebsolutions.com/public_html/appointment-be
+
+    - name: Check PHP Version
+      run: php -v

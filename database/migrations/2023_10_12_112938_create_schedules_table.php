@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('doctors_id');
-            $table->json('services');
+            $table->json('services')->nullable();
             $table->date('date');
             $table->time('time_start');
-            $table->decimal('duration', 8, 2);
+            $table->decimal('duration', 8, 2)->nullable();
+            $table->decimal('price', 10, 2)->nullable();
             $table->boolean('booked')->default(false);
             $table->timestamps();
 

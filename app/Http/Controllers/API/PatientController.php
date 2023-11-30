@@ -38,8 +38,19 @@ class PatientController extends Controller
                 $patient->expected_date = $patient->history->expected_date ?? "";
                 $patient->mens_problems = $patient->history->mens_problems ?? "";
             }
+            $imageRecords = [];
+            if ($patient->patientImageRecord) {
+                $imageRecords = $patient->patientImageRecord->map(function ($record) {
+                    return [
+                        'image_type' => $record->image_type,
+                        'image_path' => $record->image_path,
+                    ];
+                });
+            }
+        
+            $patient->image_records = $imageRecords->toArray();
 
-            unset($patient->user,$patient->history);
+            unset($patient->user,$patient->history, $patient->patientImageRecord);
 
         });
 
@@ -82,6 +93,7 @@ class PatientController extends Controller
             'pregnant' => 'sometimes|boolean',
             'expected_date' => 'sometimes|date',
             'mens_problems' => 'sometimes|boolean',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             
         ]);
 
@@ -134,6 +146,20 @@ class PatientController extends Controller
             }
             
             $patientHistory = History::create($patientHistoryData);
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('patient_images'), $imageName);
+                $imagePath = 'patient_images/' . $imageName; // Relative path to the image
+              
+                $imageRecord = [
+                  'patient_id' => $patient->id,
+                  'image_type' => 'ID',
+                  'image_path' => $imagePath,
+                ];
+              
+                PatientImageRecord::create($imageRecord);
+              }
             
             DB::commit();
 
@@ -176,7 +202,18 @@ class PatientController extends Controller
 
             
             $history = $patient->history;
-            unset($patient->user, $patient->history);
+            $imageRecords = [];
+            if ($patient->patientImageRecord) {
+                $imageRecords = $patient->patientImageRecord->map(function ($record) {
+                    return [
+                        'image_type' => $record->image_type,
+                        'image_path' => $record->image_path,
+                    ];
+                });
+            }
+        
+            $patient->image_records = $imageRecords->toArray();
+            unset($patient->user, $patient->history,  $patient->patientImageRecord);
             
             return response()->json([
                 'user' => $user,

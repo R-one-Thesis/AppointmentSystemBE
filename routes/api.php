@@ -7,6 +7,7 @@ use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\RegisterPatient;
 use App\Http\Controllers\API\DoctorController;
 use App\Http\Controllers\API\PatientController;
+use App\Http\Controllers\API\ServiceController;
 use App\Http\Controllers\API\ScheduleController;
 
 /*
@@ -24,11 +25,13 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('view-schedules', [ScheduleController::class, 'viewSchedules']);
 Route::post('register', [RegisterPatient::class, 'registerPatient']);
 
-
+ 
 Route::group(['middleware' => ['auth:sanctum']], function() {
     // Dentist or Doctor
     Route::get('view-doctors', [DoctorController::class, 'viewDoctors']);
     Route::post('add-doctors', [DoctorController::class, 'addDoctor']);
+    Route::put('edit-doctors/{id}', [DoctorController::class, 'editDoctor']);
+    Route::delete('delete-doctors/{id}', [DoctorController::class, 'deleteDoctor']);
     Route::post('add-schedule', [ScheduleController::class, 'addSchedule']);
 
     // Route::get('patients', [PatientController::class, 'viewAllPatients']);
@@ -38,8 +41,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('logout', [AuthController::class, 'logout']);
 
     Route::apiResource('admin', AdminController::class);
+    Route::post('addPatientImages/{id}', [AdminController::class, 'addPatientImages']);
     Route::apiResource('patient', PatientController::class);
+    Route::apiResource('services', ServiceController::class);
     Route::put('book-schedules/{id}', [ScheduleController::class, 'bookSchedule']);
+    Route::get('get-schedule/{id}', [ScheduleController::class, 'getSchedule']);
+    Route::resource('admin', AdminController::class);
     
 });
 // Route::get('view-doctors', [DoctorController::class, 'viewDoctors']);
