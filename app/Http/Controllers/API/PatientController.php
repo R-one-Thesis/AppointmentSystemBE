@@ -93,7 +93,7 @@ class PatientController extends Controller
             'pregnant' => 'sometimes|boolean',
             'expected_date' => 'sometimes|date',
             'mens_problems' => 'sometimes|boolean',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             
         ]);
 
