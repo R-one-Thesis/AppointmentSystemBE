@@ -116,7 +116,35 @@ class ScheduleController extends Controller
            
             DB::commit();
 
-            return response()->json(['message' => 'Booking successful'], 201);
+            
+            if(isset($patientMobileNumber)){
+                try {
+                    $receiverNumber = $patientMobileNumber;
+                    $scheduleDetails = "Thank you for booking with us!\nSchedule Details:\nDate: " . $schedule->date . "\nTime: " . $schedule->time_start . "\nDuration: " . $schedule->duration . " minutes\nPrice: $" . $schedule->price;
+
+                    $message = "Dear Customer, \n\n" . $scheduleDetails . "\n\nWe look forward to seeing you!";
+
+
+
+                    $account_sid = getenv("TWILIO_SID");
+                    $auth_token = getenv("TWILIO_TOKEN");
+                    $twilio_number = getenv("TWILIO_FROM");
+        
+                    $client = new Client($account_sid, $auth_token);
+                    $client->messages->create($receiverNumber, [
+                        'from' => $twilio_number, 
+                        'body' => $message]);
+        
+                    $smsMessage = 'SMS Sent Successfully.';
+        
+                } catch (Exception $e) {
+                    
+                    $smsMessage = $e->getMessage();
+                }
+            }
+            
+
+            return response()->json(['message' => 'Booking successful', 'sms-msg' => $smsMessage ], 201);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return response()->json(['message' => 'Schedule not found'], 404);
