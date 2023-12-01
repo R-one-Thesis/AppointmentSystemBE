@@ -121,7 +121,7 @@ class ScheduleController extends Controller
             if(isset($patientMobileNumber)){
                 try {
                     $receiverNumber = $patientMobileNumber;
-                    $scheduleDetails = "Thank you for booking with us!\nSchedule Details:\nDate: " . $schedule->date . "\nTime: " . $schedule->time_start . "\nDuration: " . $schedule->duration . " minutes\nPrice: $" . $schedule->price;
+                    $scheduleDetails = "Thank you for booking with us!\nSchedule Details:\nDate: " . $schedule->date . "\nTime: " . $schedule->time_start . "\nDuration: " . $schedule->duration . " minutes\nPrice: ₱" . $schedule->price;
 
                     $message = "Dear Customer, \n\n" . $scheduleDetails . "\n\nWe look forward to seeing you!";
 
