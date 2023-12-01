@@ -150,7 +150,7 @@ class ScheduleController extends Controller
             }
             
 
-            return response()->json(['message' => 'Booking successful', 'sms-msg' => $smsMessage , 'account_sid' => $account_sid, 'auth_token' => $auth_token, 'twilio_number' => $twilio_number], 201);
+            return response()->json(['message' => 'Booking successful', 'sms-msg' => $smsMessage], 201);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return response()->json(['message' => 'Schedule not found'], 404);
