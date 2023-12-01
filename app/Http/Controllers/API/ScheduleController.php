@@ -128,7 +128,7 @@ class ScheduleController extends Controller
 
 
                     $account_sid = env('TWILIO_SID', 'AC5606baee61946654be8421769d330238');
-                    $auth_token = env('TWILIO_TOKEN', 'a187a52e93c2726499160bb00108c0f2');
+                    $auth_token = env('TWILIO_TOKEN', 'f8ccf7a86475ef87cad7dac06ad74fad');
                     $twilio_number = env('TWILIO_FROM', '+16092566441');
 
 
