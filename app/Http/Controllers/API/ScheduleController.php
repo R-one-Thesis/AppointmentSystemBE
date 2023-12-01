@@ -114,6 +114,10 @@ class ScheduleController extends Controller
             $schedule->booked = true;
             $schedule->save();
             $patientMobileNumber = Patient::where('user_id', auth()->user()->id)->value('mobile_number');
+            if (strpos($patientMobileNumber, '0') === 0) {
+                // Mobile number starts with '0'
+                $patientMobileNumber = '+63' . substr($patientMobileNumber, 1); // Replace '0' with '+63'
+            }
            
             DB::commit();
 
