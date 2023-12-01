@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Exception;
 use App\Models\Booking;
 use App\Models\Patient;
+use Twilio\Rest\Client;
 use App\Models\Schedule;
 use App\Models\Services;
 use Illuminate\Http\Request;
@@ -113,10 +114,43 @@ class ScheduleController extends Controller
             $schedule->booked = true;
             $schedule->save();
             $patientMobileNumber = Patient::where('user_id', auth()->user()->id)->value('mobile_number');
+            if (strpos($patientMobileNumber, '0') === 0) {
+                // Mobile number starts with '0'
+                $patientMobileNumber = '+63' . substr($patientMobileNumber, 1); // Replace '0' with '+63'
+            }
            
             DB::commit();
 
-            return response()->json(['message' => 'Booking successful'], 201);
+            
+            if(isset($patientMobileNumber)){
+                try {
+                    $receiverNumber = $patientMobileNumber;
+                    $scheduleDetails = "Thank you for booking with us!\nSchedule Details:\nDate: " . $schedule->date . "\nTime: " . $schedule->time_start . "\nDuration: " . $schedule->duration . " minutes\nPrice: ₱" . $schedule->price;
+
+                    $message = "Dear Customer, \n\n" . $scheduleDetails . "\n\nWe look forward to seeing you!";
+
+
+
+                    $account_sid = env('TWILIO_SID', 'AC5606baee61946654be8421769d330238');
+                    $auth_token = env('TWILIO_TOKEN', 'f8ccf7a86475ef87cad7dac06ad74fad');
+                    $twilio_number = env('TWILIO_FROM', '+16092566441');
+
+
+                    $client = new Client($account_sid, $auth_token);
+                    $client->messages->create($receiverNumber, [
+                        'from' => $twilio_number, 
+                        'body' => $message]);
+        
+                    $smsMessage = 'SMS Sent Successfully.';
+        
+                } catch (Exception $e) {
+                    
+                    $smsMessage = $e->getMessage();
+                }
+            }
+            
+
+            return response()->json(['message' => 'Booking successful', 'sms-msg' => $smsMessage], 201);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return response()->json(['message' => 'Schedule not found'], 404);
