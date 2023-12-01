@@ -127,10 +127,11 @@ class ScheduleController extends Controller
 
 
 
-                    $account_sid = getenv("TWILIO_SID");
-                    $auth_token = getenv("TWILIO_TOKEN");
-                    $twilio_number = getenv("TWILIO_FROM");
-        
+                    $account_sid = env('TWILIO_SID', 'AC5606baee61946654be8421769d330238');
+                    $auth_token = env('TWILIO_TOKEN', 'a187a52e93c2726499160bb00108c0f2');
+                    $twilio_number = env('TWILIO_FROM', '+16092566441');
+
+
                     $client = new Client($account_sid, $auth_token);
                     $client->messages->create($receiverNumber, [
                         'from' => $twilio_number, 
