@@ -23,6 +23,7 @@ use App\Http\Controllers\API\ScheduleController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('view-schedules', [ScheduleController::class, 'viewSchedules']);
+Route::get('view-viewTodaysSchedules', [ScheduleController::class, 'viewTodaysSchedules']);
 Route::post('register', [RegisterPatient::class, 'registerPatient']);
 
  

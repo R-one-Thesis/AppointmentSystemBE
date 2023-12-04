@@ -42,6 +42,31 @@ class ScheduleController extends Controller
         return response()->json(['message' => 'data found', 'schedules' => $schedules]);
     }
 
+    public function viewTodaysSchedules() {
+        $allSchedules = Schedule::where('date', date('Y-m-d'))->get();
+    
+        if ($allSchedules->isEmpty()) {
+            return response()->json(['message' => 'No schedules found for this date']);
+        }
+    
+        $schedules = $allSchedules->map(function($data){
+            return [
+                "id" => $data->id,
+                "doctors_id" => $data->doctors_id,
+                "dentist_name" => $data->doctor->dentist,
+                "specialization" => $data->doctor->specialization,
+                "services" => $data->services,
+                "date" => $data->date,
+                "time_start" => $data->time_start,
+                "duration" => $data->duration,
+                "price" => $data->price,
+                "booked" => $data->booked,
+            ];
+        });    
+    
+        return response()->json(['message' => 'Schedules found for the date', 'schedules' => $schedules]);
+    }
+
     public function addSchedule(Request $request) {
         $validator = Validator::make($request->all(), [
             'doctors_id' => 'required',
