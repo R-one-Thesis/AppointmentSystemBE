@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('schedule_id');
             $table->unsignedBigInteger('patient_id');
+            $table->boolean('approved')->default(false);
             $table->timestamps();
 
             $table->foreign('schedule_id')->references('id')->on('schedules');

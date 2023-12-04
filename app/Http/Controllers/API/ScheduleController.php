@@ -150,7 +150,7 @@ class ScheduleController extends Controller
 
             $booking->save();
             
-            $schedule->booked = true;
+            
             $schedule->save();
             $patientMobileNumber = Patient::where('user_id', auth()->user()->id)->value('mobile_number');
             if (strpos($patientMobileNumber, '0') === 0) {
