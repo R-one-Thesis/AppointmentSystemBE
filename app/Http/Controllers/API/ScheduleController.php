@@ -78,6 +78,20 @@ class ScheduleController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+
+        $doctorId = $request->input('doctors_id');
+        $date = $request->input('date');
+        $timeStart = $request->input('time_start');
+
+        // Check if a schedule already exists for the same doctor, date, and time_start
+        $existingSchedule = Schedule::where('doctors_id', $doctorId)
+            ->where('date', $date)
+            ->where('time_start', $timeStart)
+            ->first();
+
+        if ($existingSchedule) {
+            return response()->json(['error' => 'A schedule already exists for this doctor, date, and time'], 400);
+        }
     
         try {
             $scheduleData = $request->all();
