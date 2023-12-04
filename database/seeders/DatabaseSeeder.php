@@ -47,34 +47,10 @@ class DatabaseSeeder extends Seeder
         $doctors = [
             [
                 'dentist' => 'Dr. Smith',
-                'specialization' => 'Dentistry',
                 'mobile_number' => '123-456-7890',
                 'email' => 'drsmith@example.com',
             ],
-            [
-                'dentist' => 'Dr. Johnson',
-                'specialization' => 'Orthodontics',
-                'mobile_number' => '987-654-3210',
-                'email' => 'drjohnson@example.com',
-            ],
-            [
-                'dentist' => 'Dr. Brown',
-                'specialization' => 'Oral Surgery',
-                'mobile_number' => '555-123-4567',
-                'email' => 'drbrown@example.com',
-            ],
-            [
-                'dentist' => 'Dr. Wilson',
-                'specialization' => 'Pediatric Dentistry',
-                'mobile_number' => '777-888-9999',
-                'email' => 'drwilson@example.com',
-            ],
-            [
-                'dentist' => 'Dr. Lee',
-                'specialization' => 'Endodontics',
-                'mobile_number' => '111-222-3333',
-                'email' => 'drlee@example.com',
-            ],
+            
         ];
 
         User::insert($userTypes);

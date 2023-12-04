@@ -25,7 +25,6 @@ class DoctorController extends Controller
     public function addDoctor(Request $request){
         $validator = Validator::make($request->all(), [
             'dentist' => 'required|string',
-            'specialization' => 'required|string',
             'mobile_number' => 'required|string',
             'email' => 'required|email|unique:doctors,email',
         ]);
@@ -45,7 +44,6 @@ class DoctorController extends Controller
     public function editDoctor(Request $request, $id) {
         $validator = Validator::make($request->all(), [
             'dentist' => 'sometimes|string',
-            'specialization' => 'sometimes|string',
             'mobile_number' => 'sometimes|string',
             'email' => 'sometimes|email|unique:doctors,email,' . $id,
         ]);
