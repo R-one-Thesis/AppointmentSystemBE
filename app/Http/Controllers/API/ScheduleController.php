@@ -286,12 +286,12 @@ class ScheduleController extends Controller
         }
     }
 
-    public function approveBooking($bookingId)
+    public function approveBooking($id)
     {
         try {
             DB::beginTransaction();
 
-            $booking = Booking::findOrFail($bookingId);
+            $booking = Booking::findOrFail($id);
             
             if ($booking->approved !== null) {
                 return response()->json(['message' => 'Booking has already been approved or rejected'], 400);
