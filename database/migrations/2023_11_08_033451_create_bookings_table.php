@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('schedule_id');
             $table->unsignedBigInteger('patient_id');
-            $table->string('service_type');
+            $table->json('services');
             $table->decimal('price', 10, 2);
             $table->decimal('duration', 8, 2);
             $table->boolean('approved')->nullable();
