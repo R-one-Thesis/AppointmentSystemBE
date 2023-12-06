@@ -233,6 +233,7 @@ class ScheduleController extends Controller
                 $patientId = Patient::where('user_id', auth()->user()->id)->value('id');
                 $serviceTypeArray = Services::whereIn('id', $request->input('services'))->pluck('service_type')->toArray();
                 $serializedServices = json_encode($serviceTypeArray);
+                
                 $booking = new Booking([
                     'patient_id' => $patientId,
                     'schedule_id' => $id,

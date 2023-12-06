@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\RegisterPatient;
 use App\Http\Controllers\API\DoctorController;
+use App\Http\Controllers\API\BookingController;
 use App\Http\Controllers\API\PatientController;
 use App\Http\Controllers\API\ServiceController;
 use App\Http\Controllers\API\ScheduleController;
@@ -44,6 +45,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::apiResource('admin', AdminController::class);
     Route::post('addPatientImages/{id}', [AdminController::class, 'addPatientImages']);
     Route::apiResource('patient', PatientController::class);
+    Route::apiResource('bookings', BookingController::class);
     Route::apiResource('services', ServiceController::class);
     Route::put('book-schedules/{id}', [ScheduleController::class, 'bookSchedule']);
     Route::put('approve-bookings/{id}', [ScheduleController::class, 'approveBooking']);

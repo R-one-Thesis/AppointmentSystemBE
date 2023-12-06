@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class BookingController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $bookings = Booking::with(['services', 'patient'])->get();
+
+        $mappedBookings = $bookings->map(function($booking) {
+            return [
+                'id' => $booking->id,
+                'schedule_id' => $booking->schedule_id,
+                'patient_id' => $booking->patient_id,
+                'services' => $booking->services,
+                'price' => $booking->price,
+                'duration' => $booking->duration,
+                'approved' => $booking->approved,
+                'patient_name' => $booking->patient->name
+                // You can add more fields here as per your requirement
+            ];
+        });
+
+        return response()->json(['bookings' => $mappedBookings], 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}
