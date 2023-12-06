@@ -15,7 +15,7 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::with(['services', 'patient'])->get();
+        $bookings = Booking::all();
 
         $mappedBookings = $bookings->map(function($booking) {
             return [
@@ -26,7 +26,10 @@ class BookingController extends Controller
                 'price' => $booking->price,
                 'duration' => $booking->duration,
                 'approved' => $booking->approved,
-                'patient_name' => $booking->patient->name
+                'first_name' => $booking->patient->first_name,
+                'middle_name' => $booking->patient->middle_name,
+                'last_name' => $booking->patient->last_name,
+                'extension_name' => $booking->patient->extension_name,
                 // You can add more fields here as per your requirement
             ];
         });

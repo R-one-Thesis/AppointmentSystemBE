@@ -49,6 +49,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::apiResource('services', ServiceController::class);
     Route::put('book-schedules/{id}', [ScheduleController::class, 'bookSchedule']);
     Route::put('approve-bookings/{id}', [ScheduleController::class, 'approveBooking']);
+    Route::put('reject-bookings/{id}', [ScheduleController::class, 'rejectBooking']);
     Route::get('get-schedule/{id}', [ScheduleController::class, 'getSchedule']);
     Route::resource('admin', AdminController::class);
     

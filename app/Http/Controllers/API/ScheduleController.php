@@ -238,8 +238,8 @@ class ScheduleController extends Controller
                     'patient_id' => $patientId,
                     'schedule_id' => $id,
                     'services' => $serializedServices,
-                    'price' => Services::whereIn('id', $request->input('services'))->sum('duration'),
-                    'duration' => Services::whereIn('id', $request->input('services'))->sum('price'),
+                    'price' => Services::whereIn('id', $request->input('services'))->sum('price'),
+                    'duration' => Services::whereIn('id', $request->input('services'))->sum('duration'),
                 ]);
                 $booking->save();
 
@@ -298,11 +298,14 @@ class ScheduleController extends Controller
                 return response()->json(['message' => 'Booking has already been approved or rejected'], 400);
             }
 
-            // Update the schedule associated with the booking
-            $schedule = $booking->schedule;
+            // Check if schedule is null
+            $schedule = Schedule::where('id', '=', $booking->schedule_id)->first();
+            if (!$schedule) {
+                return response()->json(['message' => 'Schedule not found for the booking'], 400);
+            }
 
             // Update schedule columns based on the booking
-            $schedule->services = $booking->service_type;
+            $schedule->services = $booking->services;
             $schedule->duration = $booking->duration;
             $schedule->price = $booking->price;
             $schedule->booked = true; // Assuming you want to mark the schedule as booked upon approval
@@ -328,9 +331,9 @@ class ScheduleController extends Controller
                 $message = "Dear Customer, \n\n" . $scheduleDetails;
 
                 // Your Twilio configuration and sending logic
-                $account_sid = env('TWILIO_SID', 'your_twilio_sid');
-                $auth_token = env('TWILIO_TOKEN', 'your_twilio_token');
-                $twilio_number = env('TWILIO_FROM', 'your_twilio_number');
+                $account_sid = env('TWILIO_SID', 'AC9d35d9ac6d7860a9b83dd96a1e8e9719');
+                $auth_token = env('TWILIO_TOKEN', '22430a936dd96c85e43908a7cc156753');
+                $twilio_number = env('TWILIO_FROM', '+14422449111');
 
                 $client = new Client($account_sid, $auth_token);
                 $client->messages->create($receiverNumber, [
@@ -382,9 +385,9 @@ class ScheduleController extends Controller
                 $message = "Dear Customer, \n\nSorry, but your booking has been rejected.";
 
                 // Your Twilio configuration and sending logic
-                $account_sid = env('TWILIO_SID', 'your_twilio_sid');
-                $auth_token = env('TWILIO_TOKEN', 'your_twilio_token');
-                $twilio_number = env('TWILIO_FROM', 'your_twilio_number');
+                $account_sid = env('TWILIO_SID', 'AC9d35d9ac6d7860a9b83dd96a1e8e9719');
+                $auth_token = env('TWILIO_TOKEN', '22430a936dd96c85e43908a7cc156753');
+                $twilio_number = env('TWILIO_FROM', '+14422449111');
 
                 $client = new Client($account_sid, $auth_token);
                 $client->messages->create($receiverNumber, [
