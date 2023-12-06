@@ -351,6 +351,61 @@ class ScheduleController extends Controller
         }
     }
 
+    public function rejectBooking($bookingId)
+    {
+        try {
+            DB::beginTransaction();
+
+            $booking = Booking::findOrFail($bookingId);
+            
+            if ($booking->approved !== null) {
+                return response()->json(['message' => 'Booking has already been approved or rejected'], 400);
+            }
+
+            // Update the booking's approved status to false (rejected)
+            $booking->approved = false;
+            $booking->save();
+
+            // SMS logic for rejection...
+            $patientMobileNumber = Patient::where('user_id', $booking->patient->user_id)->value('mobile_number');
+
+            if (strpos($patientMobileNumber, '0') === 0) {
+                // Mobile number starts with '0'
+                $patientMobileNumber = '+63' . substr($patientMobileNumber, 1); // Replace '0' with '+63'
+            }
+
+            // Ensure $patientMobileNumber is set before proceeding
+            if (isset($patientMobileNumber)) {
+                $receiverNumber = $patientMobileNumber;
+                $message = "Dear Customer, \n\nSorry, but your booking has been rejected.";
+
+                // Your Twilio configuration and sending logic
+                $account_sid = env('TWILIO_SID', 'your_twilio_sid');
+                $auth_token = env('TWILIO_TOKEN', 'your_twilio_token');
+                $twilio_number = env('TWILIO_FROM', 'your_twilio_number');
+
+                $client = new Client($account_sid, $auth_token);
+                $client->messages->create($receiverNumber, [
+                    'from' => $twilio_number, 
+                    'body' => $message
+                ]);
+
+                $smsMessage = 'SMS Sent Successfully.';
+            }
+
+            DB::commit();
+
+            return response()->json(['message' => 'Booking rejected successfully', 'sms-msg' => $smsMessage ?? null], 200);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Booking not found'], 404);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'An error occurred', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+
 
 
     public function getSchedule($id) {
