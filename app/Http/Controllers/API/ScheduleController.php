@@ -259,9 +259,9 @@ class ScheduleController extends Controller
                     $message = "Dear Customer, \n\n" . $scheduleDetails . "\n\nwait for the confirmation message that will be sent to you!";
 
                     // Your Twilio configuration and sending logic
-                    $account_sid = env('TWILIO_SID', 'your_twilio_sid');
-                    $auth_token = env('TWILIO_TOKEN', 'your_twilio_token');
-                    $twilio_number = env('TWILIO_FROM', 'your_twilio_number');
+                    $account_sid = env('TWILIO_SID', 'AC9d35d9ac6d7860a9b83dd96a1e8e9719');
+                    $auth_token = env('TWILIO_TOKEN', '95dbd0a775501448e61904fe51df46f0');
+                    $twilio_number = env('TWILIO_FROM', '+14422449111');
 
                     $client = new Client($account_sid, $auth_token);
                     $client->messages->create($receiverNumber, [
@@ -332,7 +332,7 @@ class ScheduleController extends Controller
 
                 // Your Twilio configuration and sending logic
                 $account_sid = env('TWILIO_SID', 'AC9d35d9ac6d7860a9b83dd96a1e8e9719');
-                $auth_token = env('TWILIO_TOKEN', '22430a936dd96c85e43908a7cc156753');
+                $auth_token = env('TWILIO_TOKEN', '95dbd0a775501448e61904fe51df46f0');
                 $twilio_number = env('TWILIO_FROM', '+14422449111');
 
                 $client = new Client($account_sid, $auth_token);
@@ -386,7 +386,7 @@ class ScheduleController extends Controller
 
                 // Your Twilio configuration and sending logic
                 $account_sid = env('TWILIO_SID', 'AC9d35d9ac6d7860a9b83dd96a1e8e9719');
-                $auth_token = env('TWILIO_TOKEN', '22430a936dd96c85e43908a7cc156753');
+                $auth_token = env('TWILIO_TOKEN', '95dbd0a775501448e61904fe51df46f0');
                 $twilio_number = env('TWILIO_FROM', '+14422449111');
 
                 $client = new Client($account_sid, $auth_token);
