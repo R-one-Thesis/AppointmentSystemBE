@@ -17,6 +17,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('schedule_id');
             $table->unsignedBigInteger('patient_id');
+            $table->json('services');
+            $table->decimal('price', 10, 2);
+            $table->decimal('duration', 8, 2);
+            $table->boolean('approved')->nullable();
             $table->timestamps();
 
             $table->foreign('schedule_id')->references('id')->on('schedules');

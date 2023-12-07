@@ -14,6 +14,10 @@ class Booking extends Model
     protected $fillable = [
         'patient_id',
         'schedule_id',
+        'services',
+        'price',
+        'duration',
+        'approved',
     ];
 
     public function schedule() {
